@@ -11,11 +11,10 @@
 **每次新 Session 開始，Claude 應該：**
 1. 從 GitHub 讀取最新 `PROJECT.md`（用 `git show origin/main:PROJECT.md` 或 fetch）
 2. 確認 Cowork 選取的資料夾是 `~/Dev/nihongo/`（不是 `~/kakumei/`）
-3. 詢問使用者想做什麼，**不要**主動要求使用者跑任何指令
+3. 詢問使用者想做什麼
 
-**使用者不需要自己跑指令，除非：**
-- 這台電腦是**第一次使用**（需要 clone，見下方「新電腦設定」）
-- 需要重新在 Cowork 選取資料夾
+**需要使用者執行終端機指令時，Claude 應直接告知指令內容並請使用者執行。**
+例如：需要 git push 時，告知使用者跑哪行指令即可。
 
 ---
 
