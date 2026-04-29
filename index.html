@@ -632,7 +632,7 @@ async function clearELCache() {
 }
 
 async function fetchELAudio(text) {
-  const elSpeed = 0.6;
+  const elSpeed = 0.5;
   // 讀點後插入 200ms 停頓，用 SSML break（v3 cache key 避免撈到舊版沒停頓的）
   const ssmlText = '<speak>' + text.replace(/、/g, '、<break time="200ms"/>') + '</speak>';
   const cacheKey = `${EL_VOICE_ID}:v3:${text}`;
