@@ -1776,7 +1776,7 @@ function startPlay() {
   isPlaying = true; stopFlag = false;
   unlockAudioCtxSync(); // 在 user gesture 中立刻 unlock，之後 async fetch 完也能播
   document.getElementById('playIcon').innerHTML = '<span class="mi" style="font-size:20px">stop</span>';
-  document.getElementById('playLabel').textContent = '停止';
+  document.getElementById('playLabel').textContent = '停止朗讀';
   document.getElementById('playBtn').classList.add('stop');
   playSeq(0);
 }
@@ -1803,7 +1803,7 @@ async function playSeq(i) {
   if (el) { el.scrollIntoView({ behavior:'smooth', block:'center' }); }
   const n = currentLines.slice(0,i+1).filter(l=>l&&!l.d).length;
   const tot = currentLines.filter(l=>l&&!l.d).length;
-  document.getElementById('playCount').textContent = `${n} / ${tot}`;
+  document.getElementById('playCount').textContent = '';
   const text = (line.words||[]).map(w=>w.k).join('');
   if (getELKey()) {
     if (el) el.classList.add('loading-audio'); // 載入中指示
