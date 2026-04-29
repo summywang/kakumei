@@ -495,6 +495,7 @@ textarea::placeholder, input::placeholder { color: var(--muted); font-family: 'N
       <button class="tog on" id="tZh" onclick="tog('zh')">中文</button>
       <button class="tog" id="tPos" onclick="tog('pos')">詞性</button>
     </div>
+    <div id="readerCtrlActions" style="margin-left:auto"></div>
   </div>
   <div class="lyrics hide-pos" id="lyrics">
     <p class="read-hint">點擊<span>整行</span>朗讀 ／ 點擊<span>單字</span>出現泡泡查詢 ／ <span>長按整行</span>編輯</p>
@@ -1133,22 +1134,23 @@ function setupReaderBack(fn) {
   document.getElementById('readerBack').onclick = fn;
 }
 
-// 統一控制 reader header 的 action 按鈕
+// 統一控制 reader controls 列的 action 按鈕
 // type: 'regen'（重新生成，情境用）| 'reparse'（重新解析，內容用）| 'none'
 function setReaderActionBtn(type) {
+  const container = document.getElementById('readerCtrlActions');
   // ── 重新生成 btn ──
   let genBtn = document.getElementById('genNewBtn');
   if (!genBtn) {
     genBtn = document.createElement('button');
     genBtn.id = 'genNewBtn'; genBtn.className = 'ph-action';
-    document.getElementById('readerPH').insertBefore(genBtn, document.getElementById('readerMoreBtn'));
+    container.appendChild(genBtn);
   }
   // ── 重新解析 btn ──
   let rpBtn = document.getElementById('reParseBtn');
   if (!rpBtn) {
     rpBtn = document.createElement('button');
     rpBtn.id = 'reParseBtn'; rpBtn.className = 'ph-action';
-    document.getElementById('readerPH').insertBefore(rpBtn, document.getElementById('readerMoreBtn'));
+    container.appendChild(rpBtn);
   }
   genBtn.innerHTML = '✨ 重新生成';
   rpBtn.innerHTML  = '✨ 重新解析';
