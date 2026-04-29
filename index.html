@@ -620,7 +620,7 @@ async function setCachedAudio(key, blob) {
 }
 
 async function fetchELAudio(text) {
-  const elSpeed = 0.7;
+  const elSpeed = 0.6;
   const cacheKey = `${EL_VOICE_ID}:v2:${text}`;
   const cached = await getCachedAudio(cacheKey);
   if (cached) return cached;
