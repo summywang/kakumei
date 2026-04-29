@@ -361,6 +361,7 @@ textarea::placeholder, input::placeholder { color: var(--muted); font-family: 'N
   <div class="ctx-item" id="ctxInsert"><span>在前面插入一句</span><span class="mi ctx-icon" style="font-size:18px">add</span></div>
   <div class="ctx-item" id="ctxELKey"><span>設定 ElevenLabs Key</span><span class="mi ctx-icon" style="font-size:18px">record_voice_over</span></div>
   <div class="ctx-item" id="ctxClearCache"><span>清除音檔快取</span><span class="mi ctx-icon" style="font-size:18px">delete_sweep</span></div>
+  <div class="ctx-item" id="ctxVersion" style="pointer-events:none;opacity:0.4"><span id="ctxVersionLabel">v—</span></div>
   <div class="ctx-item danger" id="ctxDelete"><span>刪除</span><span class="mi ctx-icon" style="font-size:18px">delete</span></div>
 </div>
 
@@ -635,7 +636,7 @@ async function fetchELAudio(text) {
   const elSpeed = 0.5;
   // 讀點後插入 200ms 停頓，用 SSML break（v3 cache key 避免撈到舊版沒停頓的）
   const ssmlText = '<speak>' + text.replace(/、/g, '、<break time="200ms"/>') + '</speak>';
-  const cacheKey = `${EL_VOICE_ID}:v3:${text}`;
+  const cacheKey = `${EL_VOICE_ID}:v4:spd${elSpeed}:${text}`;
   const cached = await getCachedAudio(cacheKey);
   if (cached) return cached;
   const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${EL_VOICE_ID}`, {
@@ -841,6 +842,7 @@ function resetCtxItems() {
   document.getElementById('ctxInsert').style.display = 'flex';
   document.getElementById('ctxDelete').style.display = 'flex';
   document.getElementById('ctxClearCache').style.display = 'none';
+  document.getElementById('ctxVersion').style.display = 'none';
   document.getElementById('ctxEdit').innerHTML = '<span>編輯這句</span><span class="mi ctx-icon" style="font-size:18px">edit</span>';
   document.getElementById('ctxInsert').innerHTML = '<span>在前面插入一句</span><span class="mi ctx-icon" style="font-size:18px">add</span>';
   document.getElementById('ctxDelete').innerHTML = '<span>刪除</span><span class="mi ctx-icon" style="font-size:18px">delete</span>';
@@ -1276,6 +1278,10 @@ function showSettingsMenu() {
   const clearCacheItem = document.getElementById('ctxClearCache');
   clearCacheItem.style.display = '';
   clearCacheItem.onclick = () => { hideCtx(); clearELCache(); };
+
+  const versionItem = document.getElementById('ctxVersion');
+  versionItem.style.display = '';
+  document.getElementById('ctxVersionLabel').textContent = 'v2025.04.29  速度 0.5';
 
   document.getElementById('ctxDelete').style.display = 'none';
 
