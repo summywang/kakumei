@@ -4,23 +4,29 @@
 - 使用：https://kakumei.vercel.app
 - 程式碼：https://github.com/summywang/kakumei
 
-## 技術架構
-- 單一檔案：`index.html`（約 1900 行）
-- 無框架，原生 HTML / CSS / JS
-- API：Anthropic Claude Haiku（用戶自備 Key，存在 localStorage）
-- TTS：ElevenLabs（Voice ID: `baaIB19ClFmB5qcPSImI`，木村拓哉日本男聲）
-- 音檔 Cache：IndexedDB（`el_audio_cache`，key = `{voiceId}:v2:{text}`）
-- 部署：Vercel（GitHub push → 自動部署，通常 30 秒內生效）
-- 字體：Noto Serif JP、Shippori Mincho、Noto Sans TC、Material Icons Round
+---
+
+## ⚡ Claude 新 Session 必讀（最優先執行）
+
+**每次新 Session 開始，Claude 應該：**
+1. 從 GitHub 讀取最新 `PROJECT.md`（用 `git show origin/main:PROJECT.md` 或 fetch）
+2. 確認 Cowork 選取的資料夾是 `~/Dev/nihongo/`（不是 `~/kakumei/`）
+3. 詢問使用者想做什麼，**不要**主動要求使用者跑任何指令
+
+**使用者不需要自己跑指令，除非：**
+- 這台電腦是**第一次使用**（需要 clone，見下方「新電腦設定」）
+- 需要重新在 Cowork 選取資料夾
 
 ---
 
 ## 開發工具設定
 
-### 本機路徑
+### Cowork 資料夾
 ```
 ~/Dev/nihongo/
 ```
+> Cowork 必須選取這個資料夾，Claude 才能讀寫最新的 `index.html`
+
 > ⚠️ 不要在 Google Drive 路徑下直接 git 操作，會因 sync 衝突產生 .lock 檔
 
 ### Claude Context 同步方式
@@ -31,56 +37,52 @@
 
 ---
 
-## 標準發版流程（每次開發完必做）
+## 新電腦第一次設定（使用者自行執行）
 
-```bash
-cd ~/Dev/nihongo
+> 只有這台電腦從來沒用過才需要做這段。
 
-# 1. 開發前先拉最新
-git pull
-
-# 2. 改完之後
-git add index.html
-git commit -m "簡短描述這次改了什麼"
-git push
-# ↑ push 完：Vercel 自動部署（30 秒）、claude.ai Project knowledge 自動更新
-```
-
-> 💡 **Claude 提醒你**：每次對話結束前，記得確認有沒有跑 `git push`，否則 kakumei.vercel.app 不會更新，下個 session 的 Claude 也會讀到舊版。
-
----
-
-## 換電腦 / 新 Session 快速上手
-
-### 新電腦第一次設定
 ```bash
 git clone https://github.com/summywang/kakumei.git ~/Dev/nihongo
 git config --global user.name "Summy"
 git config --global user.email "summy5677@gmail.com"
-cd ~/Dev/nihongo
 ```
 
-### 每次開始前
+Clone 完之後，在 Cowork 重新選取資料夾 `~/Dev/nihongo/`，Claude 就能讀到最新檔案。
+
+---
+
+## 標準發版流程（每次開發完必做）
+
+> ⚠️ 這段由 **Claude** 在 Cowork 執行，使用者不需要自己跑。
+
 ```bash
 cd ~/Dev/nihongo
-git pull   # 永遠先 pull，避免衝突
+git add index.html
+git commit -m "簡短描述這次改了什麼"
+git push
+# push 完：Vercel 自動部署（30 秒）、claude.ai Project knowledge 自動更新
 ```
 
-### 如果遇到 .lock 檔錯誤
+> 💡 每次對話結束前，Claude 要確認有沒有跑 `git push`，否則 kakumei.vercel.app 不會更新，下個 session 也會讀到舊版。
+
+---
+
+## 如果遇到 .lock 檔錯誤
+
 ```bash
-find .git -name "*.lock" -delete
-# 然後重跑 git add / commit / push
+find ~/Dev/nihongo/.git -name "*.lock" -delete
 ```
 
 ---
 
-## 給 Claude 的 context（新 session 開始時參考）
-
-> 這是一個日文學習單頁工具，單一檔案 `index.html`，部署在 Vercel（https://kakumei.vercel.app）。
-> 程式碼在 `~/Dev/nihongo/`，Git remote 是 `https://github.com/summywang/kakumei`。
-> TTS 使用 ElevenLabs API（木村拓哉聲音，Voice ID: baaIB19ClFmB5qcPSImI），音檔 cache 在 IndexedDB。
-> 開發完用 `git add index.html && git commit -m "..." && git push` 發版。
-> claude.ai Project「日語學習工具」已連結此 repo，push 後自動同步。
+## 技術架構
+- 單一檔案：`index.html`（約 1900 行）
+- 無框架，原生 HTML / CSS / JS
+- API：Anthropic Claude Haiku（用戶自備 Key，存在 localStorage）
+- TTS：ElevenLabs（Voice ID: `baaIB19ClFmB5qcPSImI`，木村拓哉日本男聲）
+- 音檔 Cache：IndexedDB（`el_audio_cache`，key = `{voiceId}:v2:{text}`）
+- 部署：Vercel（GitHub push → 自動部署，通常 30 秒內生效）
+- 字體：Noto Serif JP、Shippori Mincho、Noto Sans TC、Material Icons Round
 
 ---
 
