@@ -1306,7 +1306,7 @@ function renderSheet(data, fromCache) {
     });
   }
   shBody.innerHTML = html;
-  shBody.querySelectorAll('.ex-speak').forEach(b => { b.onclick = () => speakDirect(b.dataset.jp); });
+  shBody.querySelectorAll('.ex-speak').forEach(b => { b.onclick = () => { unlockAudioCtxSync(); speakDirect(b.dataset.jp); }; });
 }
 
 // ══ READER ══════════════════════════════════════════════════
