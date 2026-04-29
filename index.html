@@ -360,6 +360,7 @@ textarea::placeholder, input::placeholder { color: var(--muted); font-family: 'N
   <div class="ctx-item" id="ctxEdit"><span>編輯這句</span><span class="mi ctx-icon" style="font-size:18px">edit</span></div>
   <div class="ctx-item" id="ctxInsert"><span>在前面插入一句</span><span class="mi ctx-icon" style="font-size:18px">add</span></div>
   <div class="ctx-item" id="ctxELKey"><span>設定 ElevenLabs Key</span><span class="mi ctx-icon" style="font-size:18px">record_voice_over</span></div>
+  <div class="ctx-item" id="ctxClearCache"><span>清除音檔快取</span><span class="mi ctx-icon" style="font-size:18px">delete_sweep</span></div>
   <div class="ctx-item danger" id="ctxDelete"><span>刪除</span><span class="mi ctx-icon" style="font-size:18px">delete</span></div>
 </div>
 
@@ -618,6 +619,17 @@ async function setCachedAudio(key, blob) {
     db.transaction(EL_DB_STORE, 'readwrite').objectStore(EL_DB_STORE).put(blob, key);
   } catch {}
 }
+async function clearELCache() {
+  try {
+    const db = await openELDB();
+    await new Promise((res, rej) => {
+      const req = db.transaction(EL_DB_STORE, 'readwrite').objectStore(EL_DB_STORE).clear();
+      req.onsuccess = res;
+      req.onerror = rej;
+    });
+    alert('音檔快取已清除 🗑️');
+  } catch { alert('清除失敗，請再試一次'); }
+}
 
 async function fetchELAudio(text) {
   const elSpeed = 0.6;
@@ -828,6 +840,7 @@ function resetCtxItems() {
   document.getElementById('ctxEdit').style.display = 'flex';
   document.getElementById('ctxInsert').style.display = 'flex';
   document.getElementById('ctxDelete').style.display = 'flex';
+  document.getElementById('ctxClearCache').style.display = 'none';
   document.getElementById('ctxEdit').innerHTML = '<span>編輯這句</span><span class="mi ctx-icon" style="font-size:18px">edit</span>';
   document.getElementById('ctxInsert').innerHTML = '<span>在前面插入一句</span><span class="mi ctx-icon" style="font-size:18px">add</span>';
   document.getElementById('ctxDelete').innerHTML = '<span>刪除</span><span class="mi ctx-icon" style="font-size:18px">delete</span>';
@@ -1258,6 +1271,10 @@ function showSettingsMenu() {
   elKeyItem.innerHTML = `<span>設定 ElevenLabs Key ${getELKey() ? '✓' : ''}</span><span class="mi ctx-icon" style="font-size:18px">record_voice_over</span>`;
   elKeyItem.className = 'ctx-item';
   elKeyItem.onclick = () => { hideCtx(); promptForELKey(); };
+
+  const clearCacheItem = document.getElementById('ctxClearCache');
+  clearCacheItem.style.display = '';
+  clearCacheItem.onclick = () => { hideCtx(); clearELCache(); };
 
   document.getElementById('ctxDelete').style.display = 'none';
 
