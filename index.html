@@ -672,6 +672,7 @@ function stopCurrentEL() {
   if (elAudio) { elAudio.pause(); elAudio = null; }
 }
 
+const EL_PLAYBACK_RATE = 0.8; // 播放端降速（1.0 = 原速，0.8 = 八成速）
 async function playBlobWithCtx(blob) {
   const ctx = getAudioCtx();
   if (ctx.state === 'suspended') await ctx.resume();
@@ -682,6 +683,7 @@ async function playBlobWithCtx(blob) {
     const src = ctx.createBufferSource();
     _currentELSrc = src;
     src.buffer = audioBuf;
+    src.playbackRate.value = EL_PLAYBACK_RATE;
     src.connect(ctx.destination);
     src.onended = () => { if (_currentELSrc === src) _currentELSrc = null; resolve(); };
     src.start();
@@ -1281,7 +1283,7 @@ function showSettingsMenu() {
 
   const versionItem = document.getElementById('ctxVersion');
   versionItem.style.display = '';
-  document.getElementById('ctxVersionLabel').textContent = 'v2025.04.29  速度 0.5';
+  document.getElementById('ctxVersionLabel').textContent = 'v2025.04.29  播速 ×0.8';
 
   document.getElementById('ctxDelete').style.display = 'none';
 
