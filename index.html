@@ -1302,11 +1302,18 @@ function renderSheet(data, fromCache) {
   if (data.examples?.length) {
     html += `<div class="sec-lbl" style="margin-top:20px">例句</div>`;
     data.examples.forEach(ex => {
-      html += `<div class="ex-card"><div class="ex-jp-row"><span class="ex-jp">${ex.jp}</span><button class="ex-speak" data-jp="${(ex.jp||'').replace(/"/g,'&quot;')}"><span class="mi" style="font-size:18px">volume_up</span></button></div><div class="ex-romaji">${ex.romaji||''}</div><div class="ex-zh">${ex.zh||''}</div></div>`;
+      html += `<div class="ex-card" data-jp="${(ex.jp||'').replace(/"/g,'&quot;')}" style="cursor:pointer"><div class="ex-jp-row"><span class="ex-jp">${ex.jp}</span><span class="mi" style="font-size:18px;color:var(--muted);flex-shrink:0">volume_up</span></div><div class="ex-romaji">${ex.romaji||''}</div><div class="ex-zh">${ex.zh||''}</div></div>`;
     });
   }
   shBody.innerHTML = html;
-  shBody.querySelectorAll('.ex-speak').forEach(b => { b.onclick = () => { unlockAudioCtxSync(); speakDirect(b.dataset.jp); }; });
+  // 整個 ex-card 可點擊朗讀
+  shBody.querySelectorAll('.ex-card[data-jp]').forEach(card => {
+    card.onclick = () => { unlockAudioCtxSync(); speakDirect(card.dataset.jp); };
+  });
+  // 背景預載所有例句音檔（AI loading 期間完成 fetch，點擊時立即播放）
+  if (getELKey() && data.examples?.length) {
+    data.examples.forEach(ex => { if (ex.jp) fetchELAudio(ex.jp); });
+  }
 }
 
 // ══ READER ══════════════════════════════════════════════════
