@@ -391,7 +391,7 @@ textarea::placeholder, input::placeholder { color: var(--muted); font-family: 'N
 
 <!-- Key Bar -->
 <div id="keyBar">
-  <span style="font-size:13px;color:var(--muted);font-family:'Shippori Mincho',serif;letter-spacing:.08em">日文學習</span>
+  <span id="diffBadge" style="font-size:13px;color:var(--muted);font-family:'Shippori Mincho',serif;letter-spacing:.08em"></span>
   <button onclick="showSettingsMenu()" style="background:none;border:none;color:var(--muted);cursor:pointer;padding:4px 8px;margin-left:auto;line-height:1;display:flex;align-items:center">
     <span class="mi" style="font-size:26px">settings</span>
   </button>
@@ -1289,7 +1289,11 @@ function showSettingsMenu() {
   ctxMenu.classList.add('show');
 }
 
-function updateDiffBadge() {} // no-op, badge removed
+function updateDiffBadge() {
+  const diff = DIFF_LEVELS.find(l => l.id === getDiff()) || DIFF_LEVELS[0];
+  const el = document.getElementById('diffBadge');
+  if (el) el.textContent = diff.jlpt;
+}
 
 function showDiffSettings() {
   const current = getDiff();
