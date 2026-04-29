@@ -852,20 +852,13 @@ function openScenario(sc) {
     showPage('pageHome'); buildHomeGrids();
   };
 
-  let genNewBtn = document.getElementById('genNewBtn');
-  if (!genNewBtn) {
-    genNewBtn = document.createElement('button');
-    genNewBtn.id = 'genNewBtn'; genNewBtn.className = 'ph-action';
-    genNewBtn.textContent = '生成新對話';
-    document.getElementById('readerPH').insertBefore(genNewBtn, document.getElementById('readerMoreBtn'));
-  }
-  genNewBtn.style.display = '';
-  genNewBtn.onclick = () => goGenerateScenario(sc);
+  setReaderActionBtn('regen');
+  document.getElementById('genNewBtn').onclick = () => goGenerateScenario(sc);
 
   loadDiffContent(sc, '初級');
   setupReaderBack(() => {
     setDiffFilter(false);
-    const g = document.getElementById('genNewBtn'); if (g) g.style.display = 'none';
+    setReaderActionBtn('none');
     document.getElementById('readerMoreBtn').style.display = 'none';
     resetCtxItems(); showPage('pageHome');
   });
@@ -917,7 +910,8 @@ function openSavedContent(i) {
   document.getElementById('readerTitle').textContent = saved[i].title;
   document.getElementById('saveBtn').style.display = 'none';
   setDiffFilter(false);
-  const g = document.getElementById('genNewBtn'); if (g) g.style.display = 'none';
+  setReaderActionBtn('reparse');
+  document.getElementById('reParseBtn').onclick = reParseContent;
   document.getElementById('readerMoreBtn').style.display = '';
   currentDeleteFn = () => {
     if (!confirm(`確定刪除「${saved[i].title}」？`)) return;
@@ -927,6 +921,7 @@ function openSavedContent(i) {
   };
   resetCtxItems();
   setupReaderBack(() => {
+    setReaderActionBtn('none');
     document.getElementById('readerMoreBtn').style.display = 'none';
     resetCtxItems(); showPage('pageHome');
   });
@@ -953,6 +948,8 @@ async function processPaste() {
     pendingOriginalTitle = '';
     document.getElementById('readerTitle').textContent = '貼入文字';
     document.getElementById('saveBtn').style.display = '';
+    setReaderActionBtn('reparse');
+    document.getElementById('reParseBtn').onclick = reParseContent;
     setupReaderBack(confirmDiscard);
     buildReader(); hideProc(); showPage('pageReader');
   } catch(e) { hideProc(); alert('處理失敗：' + e.message); }
@@ -1117,6 +1114,44 @@ function confirmDiscard() {
 
 function setupReaderBack(fn) {
   document.getElementById('readerBack').onclick = fn;
+}
+
+// 統一控制 reader header 的 action 按鈕
+// type: 'regen'（重新生成，情境用）| 'reparse'（重新解析，內容用）| 'none'
+function setReaderActionBtn(type) {
+  // ── 重新生成 btn ──
+  let genBtn = document.getElementById('genNewBtn');
+  if (!genBtn) {
+    genBtn = document.createElement('button');
+    genBtn.id = 'genNewBtn'; genBtn.className = 'ph-action';
+    document.getElementById('readerPH').insertBefore(genBtn, document.getElementById('readerMoreBtn'));
+  }
+  // ── 重新解析 btn ──
+  let rpBtn = document.getElementById('reParseBtn');
+  if (!rpBtn) {
+    rpBtn = document.createElement('button');
+    rpBtn.id = 'reParseBtn'; rpBtn.className = 'ph-action';
+    document.getElementById('readerPH').insertBefore(rpBtn, document.getElementById('readerMoreBtn'));
+  }
+  genBtn.innerHTML = '✨ 重新生成';
+  rpBtn.innerHTML  = '✨ 重新解析';
+  genBtn.style.display = type === 'regen'   ? '' : 'none';
+  rpBtn.style.display  = type === 'reparse' ? '' : 'none';
+}
+
+async function reParseContent() {
+  if (!getKey()) { promptForKey(); return; }
+  const text = currentLines
+    .filter(l => l && !l.d && l.words)
+    .map(l => l.words.map(w => w.k).join(''))
+    .join('\n');
+  if (!text.trim()) return;
+  showProc('AI 重新解析中…');
+  try {
+    const lines = await parseText(text);
+    currentLines = lines; pendingLines = lines;
+    hideProc(); buildReader(); markEdited();
+  } catch(e) { hideProc(); alert('解析失敗：' + e.message); }
 }
 
 // ══ CONFIRM DIALOG ══════════════════════════════════════════
@@ -1810,8 +1845,8 @@ async function processAiSearchSheet() {
     pendingOriginalTitle = '';
     document.getElementById('readerTitle').textContent = q;
     document.getElementById('saveBtn').style.display = '';
-    const genNewBtn = document.getElementById('genNewBtn');
-    if (genNewBtn) genNewBtn.style.display = 'none';
+    setReaderActionBtn('reparse');
+    document.getElementById('reParseBtn').onclick = reParseContent;
     setupReaderBack(confirmDiscard);
     buildReader(); hideProc(); showPage('pageReader');
   } catch(e) { hideProc(); alert('搜尋失敗：' + e.message); }
