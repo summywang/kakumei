@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>日文學習</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+TC:wght@300;400;500&family=Shippori+Mincho:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+.mi { font-family: 'Material Icons Round'; font-style: normal; font-weight: normal; line-height: 1; letter-spacing: normal; text-transform: none; display: inline-block; white-space: nowrap; word-wrap: normal; -webkit-font-smoothing: antialiased; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+:root {
+  --bg: #0d0b10; --surface: #16131c; --border: #2a2335;
+  --accent: #c4a24f; --accent2: #8b5cf6; --text: #e8e0d5;
+  --muted: #7a6f85; --ruby: #b8a87a; --sheet-bg: #161520;
+  --topbar: 44px; /* key bar height */
+}
+html, body { overscroll-behavior-y: contain; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: 'Noto Sans TC', sans-serif; min-height: 100vh; overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 80% 10%, rgba(139,92,246,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 10% 80%, rgba(196,162,79,0.06) 0%, transparent 60%);
+}
+
+/* ── Key bar ── */
+#keyBar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+  height: var(--topbar);
+  background: #1a1520; border-bottom: 1px solid var(--border);
+  padding: 0 16px; display: flex; align-items: center; justify-content: space-between;
+}
+#keyStatus { font-size: 12px; color: var(--muted); }
+#keyBarBtn { background: #2a2335; border: 1px solid #3a3250; color: var(--accent); padding: 4px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; }
+
+/* ── Page system ── */
+.page { display: none; min-height: 100vh; padding-top: var(--topbar); }
+.page.active { display: block; }
+
+/* ── Page header ── */
+.ph {
+  position: sticky; top: var(--topbar); z-index: 100;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 16px; height: 52px; flex-shrink: 0;
+}
+.ph-back { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 4px 8px; border-radius: 6px; line-height: 1; display:flex;align-items:center; }
+.ph-title { font-size: 15px; font-weight: 600; flex: 1; }
+.ph-action { background: none; border: 1px solid var(--border); color: var(--accent); font-size: 12px; padding: 6px 12px; border-radius: 8px; cursor: pointer; white-space: nowrap; font-family: inherit; }
+.ph-action.primary { background: var(--accent); color: #0d0b10; font-weight: 600; border-color: var(--accent); }
+
+/* ── HOME ── */
+.home-scroll { padding: 0 0 100px; max-width: 540px; margin: 0 auto; }
+.home-logo { font-family: 'Shippori Mincho', serif; font-size: 30px; font-weight: 700; color: var(--accent); letter-spacing: .12em; text-align: center; margin-bottom: 4px; padding: 0 18px; }
+.home-tagline { font-size: 12px; color: var(--muted); text-align: center; margin-bottom: 28px; }
+
+.section-label { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; margin-top: 28px; }
+.section-label:first-of-type { margin-top: 0; }
+
+/* Entry buttons */
+.entry-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 6px; }
+.entry-btn {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+  padding: 16px 14px; border-radius: 14px;
+  border: 1px solid var(--border); background: var(--surface);
+  cursor: pointer; text-align: left; transition: all .18s; color: var(--text);
+}
+.entry-btn:hover { border-color: rgba(196,162,79,.5); }
+.entry-btn-icon { font-size: 24px; }
+.entry-btn-title { font-size: 14px; font-weight: 600; }
+.entry-btn-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+/* Segmented control */
+.seg-ctrl {
+  display: flex; background: rgba(255,255,255,0.08); border-radius: 10px;
+  padding: 3px; gap: 2px; margin-bottom: 20px;
+}
+.seg-btn {
+  flex: 1; padding: 7px 12px; border-radius: 8px; border: none;
+  background: transparent; color: var(--muted); font-size: 14px; font-weight: 500;
+  cursor: pointer; font-family: inherit; transition: all .2s;
+  white-space: nowrap;
+}
+.seg-btn.on {
+  background: var(--surface); color: var(--text); font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+.tab-panel { display: none; }
+.tab-panel.on { display: block; }
+.sc-home-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.sc-home-card {
+  border-radius: 12px; border: 1px solid var(--border); background: var(--surface);
+  cursor: pointer; transition: all .18s;
+  display: flex; flex-direction: column;
+  padding: 14px 12px 16px; aspect-ratio: 1;
+  justify-content: center; align-items: center; text-align: center;
+}
+.sc-home-card:hover { border-color: rgba(196,162,79,.4); background: rgba(255,255,255,.03); }
+.sc-home-card-icon { font-size: 26px; margin-bottom: 10px; }
+.sc-home-card-title { font-size: 13px; font-weight: 600; color: var(--text); }
+
+/* Add scenario card */
+.sc-add-card {
+  border-radius: 12px; border: 2px dashed var(--border); background: transparent;
+  cursor: pointer; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 4px; aspect-ratio: 1;
+  transition: all .18s; color: var(--muted);
+}
+.sc-add-card:hover { border-color: rgba(196,162,79,.5); color: var(--accent); }
+
+/* Difficulty filter bar */
+.diff-filter {
+  display: flex; gap: 6px;
+  padding: 8px 14px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  position: sticky; top: calc(var(--topbar) + 52px); z-index: 98;
+}
+.diff-btn {
+  flex: 1; padding: 7px 4px; border-radius: 8px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--muted); font-size: 12px; cursor: pointer;
+  font-family: inherit; transition: all .15s; text-align: center;
+}
+.diff-btn.on { background: rgba(196,162,79,.12); border-color: rgba(196,162,79,.4); color: var(--accent); font-weight: 600; }
+
+/* My content — list style */
+.my-content-list { display: flex; flex-direction: column; gap: 8px; }
+.my-content-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; border-radius: 12px;
+  border: 1px solid var(--border); background: var(--surface);
+  cursor: pointer; transition: all .18s;
+}
+.my-content-item:hover { border-color: rgba(196,162,79,.4); }
+.my-content-icon { font-size: 22px; flex-shrink: 0; }
+.my-content-info { flex: 1; min-width: 0; }
+.my-content-title { font-size: 14px; font-weight: 600; font-family: 'Shippori Mincho', serif; color: var(--text); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.my-content-meta { font-size: 11px; color: var(--muted); }
+.my-content-arrow { color: var(--muted); font-size: 16px; flex-shrink: 0; }
+
+/* Add card */
+.add-main-btn {
+  width: 100%; padding: 14px; border-radius: 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); font-size: 15px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: all .18s; margin-bottom: 6px;
+}
+.add-main-btn:hover { border-color: rgba(196,162,79,.5); background: rgba(196,162,79,.05); }
+  border-radius: 14px; border: 2px dashed var(--border); background: transparent;
+  cursor: pointer; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 8px; padding: 28px 14px;
+  transition: all .18s; color: var(--muted); min-height: 120px;
+}
+.add-card:hover { border-color: rgba(196,162,79,.5); color: var(--accent); }
+.add-card-icon { font-size: 28px; }
+.add-card-label { font-size: 12px; }
+
+/* ── PASTE ── */
+.form-wrap { padding: 20px 18px 100px; max-width: 680px; margin: 0 auto; }
+textarea, input[type=text] {
+  width: 100%; padding: 14px 16px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; color: var(--text); font-size: 15px;
+  font-family: 'Shippori Mincho', serif; outline: none;
+  transition: border-color .18s;
+}
+textarea { min-height: 200px; resize: vertical; line-height: 1.7; }
+textarea:focus, input[type=text]:focus { border-color: var(--accent); }
+textarea::placeholder, input::placeholder { color: var(--muted); font-family: 'Noto Sans TC', sans-serif; font-size: 13px; }
+.char-count { font-size: 11px; color: var(--muted); text-align: right; margin-top: 6px; margin-bottom: 14px; }
+
+/* ── AI GEN ── */
+.scenario-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
+.sc-btn {
+  padding: 12px 8px; border-radius: 10px; border: 1px solid var(--border);
+  background: var(--surface); cursor: pointer; text-align: center; transition: all .18s; color: var(--text);
+}
+.sc-btn:hover, .sc-btn.on { border-color: var(--accent2); background: rgba(139,92,246,.1); }
+.sc-icon { font-size: 22px; display: block; margin-bottom: 4px; }
+.sc-label { font-size: 12px; }
+.level-row { display: flex; gap: 8px; margin-bottom: 20px; }
+.lv-btn { flex: 1; padding: 9px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; text-align: center; font-size: 12px; transition: all .18s; color: var(--muted); font-family: inherit; }
+.lv-btn.on { border-color: var(--accent); background: rgba(196,162,79,.1); color: var(--accent); font-weight: 600; }
+
+.hint-input { margin-bottom: 14px; }
+.hint-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+
+/* ── Buttons ── */
+.btn-primary {
+  width: 100%; padding: 14px; border-radius: 12px;
+  background: var(--accent); color: #0d0b10; border: none;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all .2s;
+}
+.btn-primary:hover { background: #d4b25f; }
+.btn-primary:disabled { background: #3a3250; color: var(--muted); cursor: not-allowed; }
+.btn-secondary {
+  width: 100%; padding: 12px; border-radius: 12px;
+  background: transparent; color: var(--muted); border: 1px solid var(--border);
+  font-size: 14px; cursor: pointer; font-family: inherit; margin-top: 8px;
+  transition: all .18s;
+}
+.btn-secondary:hover { color: var(--text); border-color: rgba(255,255,255,.2); }
+
+/* ── READER ── */
+.reader-controls {
+  position: sticky; top: calc(var(--topbar) + 52px); z-index: 97;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px; padding: 8px 14px; flex-wrap: wrap;
+}
+.reader-controls.has-diff { top: calc(var(--topbar) + 52px + 45px); }
+.ctrl-label { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; }
+.toggle-group { display: flex; gap: 2px; background: var(--bg); border-radius: 8px; padding: 3px; border: 1px solid var(--border); }
+.tog { background: transparent; border: none; color: var(--muted); padding: 4px 10px; border-radius: 5px; font-size: 12px; cursor: pointer; transition: all .15s; font-family: inherit; }
+.tog.on { background: var(--accent); color: #0d0b10; font-weight: 600; }
+.speed-wrap { display: flex; align-items: center; gap: 5px; margin-left: auto; }
+.spd-btn { background: var(--bg); border: 1px solid var(--border); color: var(--muted); width: 26px; height: 26px; border-radius: 6px; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.spd-val { font-size: 12px; color: var(--muted); min-width: 32px; text-align: center; }
+
+.lyrics { max-width: 680px; margin: 0 auto; padding: 20px 16px 100px; user-select: none; -webkit-user-select: none; }
+.read-hint { font-size: 11px; color: var(--muted); text-align: center; margin-bottom: 18px; }
+.read-hint span { color: var(--accent); }
+.divider { height: 1px; background: var(--border); margin: 14px 0; opacity: .5; }
+.line {
+  padding: 9px 12px; border-radius: 10px; margin-bottom: 2px;
+  border: 1px solid transparent; transition: all .2s; cursor: pointer; position: relative;
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+}
+.line:hover { background: rgba(255,255,255,.03); border-color: var(--border); }
+.line.playing { background: rgba(196,162,79,.1); border-color: rgba(196,162,79,.6); }
+.line.playing::before { content: ''; position: absolute; left: 0; top: 20%; height: 60%; width: 3px; background: var(--accent); border-radius: 0 2px 2px 0; }
+.line.loading-audio { background: rgba(139,92,246,.07); border-color: rgba(139,92,246,.3); }
+.line.loading-audio::before { content: ''; position: absolute; left: 0; top: 20%; height: 60%; width: 3px; background: var(--accent2); border-radius: 0 2px 2px 0; animation: loadpulse .7s ease-in-out infinite; }
+@keyframes loadpulse { 0%,100% { opacity:.3; } 50% { opacity:1; } }
+.speaker-tag { font-size: 10px; color: var(--accent2); font-weight: 600; padding: 4px 12px 0; letter-spacing: .05em; }
+.jp-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1px; margin-bottom: 4px; }
+.wu { display: inline-flex; flex-direction: column; align-items: center; padding: 3px 3px 2px; border-radius: 5px; cursor: pointer; transition: background .15s; }
+.wu:hover, .wu:active { background: rgba(196,162,79,.15); }
+.ruby { font-size: 9px; color: var(--ruby); min-height: 11px; line-height: 1; margin-bottom: 1px; font-family: 'Noto Serif JP', serif; }
+.kanji { font-family: 'Shippori Mincho', serif; font-size: 19px; font-weight: 700; color: #f0e8da; line-height: 1; letter-spacing: .04em; }
+.romaji-row { font-size: 11px; color: #6a617a; font-style: italic; margin-bottom: 3px; }
+.zh-row { font-size: 13px; color: #9e95b0; }
+.hide-ruby .ruby { visibility: hidden; }
+.hide-romaji .romaji-row { display: none; }
+.hide-zh .zh-row { display: none; }
+.pos-row { font-size: 9px; color: #a07fd4; min-height: 10px; line-height: 1; margin-top: 1px; white-space: nowrap; text-align: center; }
+.hide-pos .pos-row { display: none; }
+
+/* Bubble */
+#bubble {
+  position: fixed; z-index: 500;
+  display: flex; align-items: center;
+  background: rgba(30,28,38,0.96);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3);
+  overflow: hidden;
+  opacity: 0; pointer-events: none;
+  transition: opacity .15s ease, transform .15s ease;
+  transform: scale(0.88) translateY(4px);
+}
+#bubble.show { opacity: 1; pointer-events: auto; transform: scale(1) translateY(-4px); }
+#bubble::after { content:''; position:absolute; bottom:-8px; left:50%; transform:translateX(-50%); border:8px solid transparent; border-top-color:rgba(255,255,255,0.1); border-bottom:0; }
+#bubble::before { content:''; position:absolute; bottom:-6px; left:50%; transform:translateX(-50%); z-index:1; border:7px solid transparent; border-top-color:rgba(30,28,38,0.96); border-bottom:0; }
+.bub-div { width:1px; height:36px; background:rgba(255,255,255,.08); flex-shrink:0; }
+.bub-btn {
+  height: 44px; padding: 0 16px;
+  border: none; display: flex; align-items: center; justify-content: center;
+  gap: 6px; cursor: pointer; background: transparent;
+  transition: background .1s; flex-shrink: 0;
+  font-size: 13px; color: var(--text); font-family: inherit;
+}
+.bub-btn:active { background: rgba(255,255,255,0.1); }
+#bWord-wrap { display: flex; flex-direction: column; align-items: center; padding: 0 4px; gap: 1px; }
+
+/* Sheet */
+#overlay { position:fixed; inset:0; z-index:600; background:rgba(0,0,0,.55); backdrop-filter:blur(4px); opacity:0; pointer-events:none; transition:opacity .3s; }
+#overlay.show { opacity:1; pointer-events:auto; }
+#sheet { position:fixed; left:0; right:0; bottom:0; z-index:700; background:var(--sheet-bg); border-radius:22px 22px 0 0; border-top:1px solid rgba(82,78,110,.35); box-shadow:0 -8px 40px rgba(0,0,0,.5); transform:translateY(100%); transition:transform .38s cubic-bezier(.32,.72,0,1); max-height:82vh; display:flex; flex-direction:column; }
+#sheet.show { transform:translateY(0); }
+.sh-handle { width:38px; height:4px; background:#3a3250; border-radius:2px; margin:14px auto 0; flex-shrink:0; }
+.sh-header { display:flex; align-items:center; gap:14px; padding:14px 22px; border-bottom:1px solid var(--border); flex-shrink:0; }
+.sh-word { font-family:'Shippori Mincho',serif; font-size:28px; font-weight:700; color:var(--accent); }
+.sh-sub { font-size:12px; color:var(--muted); margin-top:3px; }
+.sh-speak { margin-left:auto; width:40px; height:40px; border-radius:50%; background:rgba(196,162,79,.12); border:1px solid rgba(196,162,79,.3); color:var(--accent); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.sh-body { overflow-y:auto; padding:18px 22px 36px; flex:1; -webkit-overflow-scrolling:touch; }
+.sec-lbl { font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+.meaning-box { font-size:14px; line-height:1.75; color:var(--text); background:rgba(255,255,255,.03); border-left:3px solid var(--accent); padding:12px 14px; border-radius:0 8px 8px 0; }
+.ex-card { background:rgba(255,255,255,.025); border:1px solid var(--border); border-radius:12px; padding:13px 15px; margin-bottom:10px; }
+.ex-jp-row { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+.ex-jp { font-family:'Shippori Mincho',serif; font-size:17px; font-weight:500; color:#f0e8da; flex:1; line-height:1.5; }
+.ex-speak { background:none; border:none; color:var(--muted); font-size:14px; cursor:pointer; flex-shrink:0; }
+.ex-romaji { font-size:11px; color:#5a5268; font-style:italic; margin-bottom:4px; }
+.ex-zh { font-size:13px; color:#9e95b0; }
+.loading { display:flex; align-items:center; gap:10px; color:var(--muted); font-size:14px; padding:16px 0; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.spinner { width:18px; height:18px; border-radius:50%; border:2px solid #3a3250; border-top-color:var(--accent2); animation:spin .8s linear infinite; flex-shrink:0; }
+
+/* Play bar */
+.playbar { position:fixed; bottom:0; left:0; right:0; padding:14px 20px; background:linear-gradient(to top,var(--bg) 55%,transparent); display:flex; justify-content:center; gap:12px; align-items:center; pointer-events:none; z-index:50; }
+.play-btn { background:var(--accent); color:#0d0b10; border:none; padding:10px 28px; border-radius:100px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit; display:flex; align-items:center; gap:8px; pointer-events:all; transition:all .2s; }
+.play-btn.stop { background:#3d3a4a; color:var(--text); }
+.play-count { font-size:12px; color:var(--muted); }
+
+/* Processing overlay */
+#processing { position:fixed; inset:0; z-index:800; background:rgba(13,11,16,.92); backdrop-filter:blur(8px); display:none; flex-direction:column; align-items:center; justify-content:center; gap:16px; }
+#processing.show { display:flex; }
+.big-spin { width:40px; height:40px; border-radius:50%; border:3px solid #2a2335; border-top-color:var(--accent); animation:spin 1s linear infinite; }
+#procMsg { color:var(--text); font-size:15px; }
+#procSub { color:var(--muted); font-size:12px; }
+
+/* Confirm dialog */
+#confirmDlg { position:fixed; inset:0; z-index:900; background:rgba(0,0,0,.6); backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; padding:20px; }
+#confirmDlg.show { display:flex; }
+.dlg-box { background:var(--sheet-bg); border-radius:16px; border:1px solid var(--border); padding:24px 20px; max-width:320px; width:100%; }
+.dlg-title { font-size:16px; font-weight:600; margin-bottom:8px; }
+.dlg-msg { font-size:13px; color:var(--muted); margin-bottom:20px; line-height:1.6; }
+.dlg-btns { display:flex; gap:10px; }
+.dlg-btn { flex:1; padding:11px; border-radius:10px; border:none; font-size:14px; cursor:pointer; font-family:inherit; font-weight:500; }
+.dlg-btn.cancel { background:var(--surface); color:var(--text); border:1px solid var(--border); }
+.dlg-btn.confirm { background:var(--accent); color:#0d0b10; font-weight:600; }
+.dlg-btn.danger { background:#7f2020; color:#ffcccc; }
+/* iOS-style context menu */
+#ctxMenu {
+  position: fixed; z-index: 950;
+  background: rgba(30,28,38,0.96);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3);
+  min-width: 200px; overflow: hidden;
+  opacity: 0; pointer-events: none;
+  transform: scale(0.88); transition: opacity 0.15s ease, transform 0.15s ease;
+}
+#ctxMenu.show { opacity: 1; pointer-events: auto; transform: scale(1); }
+.ctx-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 16px; cursor: pointer; font-size: 15px; color: var(--text);
+  transition: background 0.1s; gap: 12px;
+}
+.ctx-item:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.08); }
+.ctx-item:active { background: rgba(255,255,255,0.1); }
+.ctx-item.danger { color: #ff6b6b; }
+.ctx-icon { font-size: 15px; flex-shrink: 0; }
+#ctxOverlay { position: fixed; inset: 0; z-index: 940; display: none; }
+#ctxOverlay.show { display: block; }
+</style>
+<body>
+
+<!-- iOS context menu -->
+<div id="ctxOverlay" onclick="hideCtx()"></div>
+<div id="ctxMenu">
+  <div class="ctx-item" id="ctxEdit"><span>編輯這句</span><span class="mi ctx-icon" style="font-size:18px">edit</span></div>
+  <div class="ctx-item" id="ctxInsert"><span>在前面插入一句</span><span class="mi ctx-icon" style="font-size:18px">add</span></div>
+  <div class="ctx-item" id="ctxELKey"><span>設定 ElevenLabs Key</span><span class="mi ctx-icon" style="font-size:18px">record_voice_over</span></div>
+  <div class="ctx-item danger" id="ctxDelete"><span>刪除</span><span class="mi ctx-icon" style="font-size:18px">delete</span></div>
+</div>
+
+<!-- AI Search bottom sheet -->
+<div id="aiSearchOverlay" onclick="hideAiSearchDlg()" style="position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:none;"></div>
+<div id="aiSearchDlg" style="position:fixed;left:0;right:0;bottom:0;z-index:700;background:var(--sheet-bg);border-radius:22px 22px 0 0;border-top:1px solid rgba(82,78,110,.35);padding:0 20px 40px;display:none;flex-direction:column">
+  <div style="width:38px;height:4px;background:#3a3250;border-radius:2px;margin:14px auto 20px"></div>
+  <div style="font-size:17px;font-weight:700;margin-bottom:6px">AI 搜尋</div>
+  <div style="font-size:13px;color:var(--muted);margin-bottom:18px">輸入關鍵字，AI 自動整理成學習素材</div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:8px">搜尋關鍵字</div>
+  <input type="text" id="aiSearchInput" placeholder="例如：天氣之子 台詞、YOASOBI 怪物 歌詞、日本新聞…" style="margin-bottom:16px">
+  <button class="btn-primary" onclick="processAiSearchSheet()">✨ 搜尋並整理</button>
+  <button class="btn-secondary" onclick="hideAiSearchDlg()">取消</button>
+</div>
+
+<!-- New scenario dialog -->
+<div id="newScOverlay" onclick="hideNewScDlg()" style="position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center;padding:20px"></div>
+<div id="newScDlg" style="position:fixed;left:0;right:0;bottom:0;z-index:700;background:var(--sheet-bg);border-radius:22px 22px 0 0;border-top:1px solid rgba(82,78,110,.35);padding:0 20px 40px;display:none;flex-direction:column">
+  <div style="width:38px;height:4px;background:#3a3250;border-radius:2px;margin:14px auto 20px"></div>
+  <div style="font-size:17px;font-weight:700;margin-bottom:6px">新增情境對話</div>
+  <div style="font-size:13px;color:var(--muted);margin-bottom:18px">AI 將自動生成初級、中級、進階三份對話</div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:8px">情境說明</div>
+  <input type="text" id="newScInput" placeholder="例如：在藥局買感冒藥、跟房東溝通修繕問題、搭計程車…" style="margin-bottom:16px">
+  <button class="btn-primary" onclick="processNewScenario()">✨ AI 生成對話</button>
+  <button class="btn-secondary" onclick="hideNewScDlg()">取消</button>
+</div>
+
+<!-- Key Bar -->
+<div id="keyBar">
+  <span style="font-size:13px;color:var(--muted);font-family:'Shippori Mincho',serif;letter-spacing:.08em">日文學習</span>
+  <button onclick="showSettingsMenu()" style="background:none;border:none;color:var(--muted);cursor:pointer;padding:4px 8px;margin-left:auto;line-height:1;display:flex;align-items:center">
+    <span class="mi" style="font-size:26px">settings</span>
+  </button>
+</div>
+
+<!-- Difficulty settings sheet -->
+<div id="diffOverlay" onclick="hideDiffSettings()" style="position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:none;"></div>
+<div id="diffSheet" style="position:fixed;left:0;right:0;bottom:0;z-index:700;background:var(--sheet-bg);border-radius:22px 22px 0 0;border-top:1px solid rgba(82,78,110,.35);padding:0 20px 40px;display:none;flex-direction:column">
+  <div style="width:38px;height:4px;background:#3a3250;border-radius:2px;margin:14px auto 20px"></div>
+  <div style="font-size:17px;font-weight:700;margin-bottom:4px">學習難度</div>
+  <div style="font-size:13px;color:var(--muted);margin-bottom:20px">影響 AI 解釋深度、例句複雜度與語法分析</div>
+  <div id="diffOptions" style="display:flex;flex-direction:column;gap:10px"></div>
+  <button class="btn-secondary" onclick="hideDiffSettings()" style="margin-top:16px">關閉</button>
+</div>
+
+<!-- ══ HOME ══ -->
+<div class="page active" id="pageHome">
+  <div class="home-scroll">
+    <div class="home-logo">日文學習</div>
+    <div class="home-tagline">點字查詢・語法分析・朗讀練習</div>
+
+    <div id="secMyContent" style="padding:0 18px">
+      <div class="section-label">你的內容</div>
+      <div class="my-content-list" id="myContentGrid"></div>
+    </div>
+
+    <div id="secScenario" style="margin-top:28px;padding:0 18px">
+      <div class="section-label">情境對話</div>
+      <div class="sc-home-grid" id="scenarioHomeGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PASTE ══ -->
+<div class="page" id="pagePaste">
+  <div class="ph">
+    <button class="ph-back" onclick="showPage('pageHome')"><span class="mi" style="font-size:22px">arrow_back</span></button>
+    <span class="ph-title">貼入文字</span>
+  </div>
+  <div class="form-wrap">
+    <textarea id="pasteInput" placeholder="貼入日文文字…&#10;&#10;例如：歌詞、新聞、小說段落、動漫台詞、旅遊告示…&#10;&#10;AI 會自動拆解單字、加振假名和中文翻譯"></textarea>
+    <div class="char-count" id="pasteCount">0 字</div>
+    <button class="btn-primary" onclick="processPaste()">開始學習</button>
+  </div>
+</div>
+
+<!-- ══ AI GEN ══ -->
+<div class="page" id="pageAI">
+  <div class="ph">
+    <button class="ph-back" onclick="showPage('pageHome')"><span class="mi" style="font-size:22px">arrow_back</span></button>
+    <span class="ph-title">AI 幫幫我</span>
+  </div>
+  <div class="form-wrap">
+    <div class="section-label" style="margin-top:0">🔍 搜尋內容</div>
+    <input type="text" id="searchInput" placeholder="輸入關鍵字，例如：天氣之子 台詞、YOASOBI 怪物 歌詞…" style="margin-bottom:12px">
+    <button class="btn-primary" onclick="processSearch()" style="margin-bottom:32px">搜尋並整理</button>
+
+    <div class="section-label">💬 情境對話</div>
+    <div class="scenario-grid" id="scGrid">
+      <button class="sc-btn" data-s="機場" onclick="pickSc(this)"><span class="sc-icon">✈️</span><span class="sc-label">機場</span></button>
+      <button class="sc-btn" data-s="餐廳" onclick="pickSc(this)"><span class="sc-icon">🍜</span><span class="sc-label">餐廳</span></button>
+      <button class="sc-btn" data-s="便利商店" onclick="pickSc(this)"><span class="sc-icon">🏪</span><span class="sc-label">便利商店</span></button>
+      <button class="sc-btn" data-s="問路" onclick="pickSc(this)"><span class="sc-icon">🗺️</span><span class="sc-label">問路</span></button>
+      <button class="sc-btn" data-s="飯店" onclick="pickSc(this)"><span class="sc-icon">🏨</span><span class="sc-label">飯店</span></button>
+      <button class="sc-btn" data-s="購物" onclick="pickSc(this)"><span class="sc-icon">🛍️</span><span class="sc-label">購物</span></button>
+      <button class="sc-btn" data-s="看醫生" onclick="pickSc(this)"><span class="sc-icon">🏥</span><span class="sc-label">看醫生</span></button>
+      <button class="sc-btn" data-s="電車" onclick="pickSc(this)"><span class="sc-icon">🚃</span><span class="sc-label">電車</span></button>
+      <button class="sc-btn" data-s="居酒屋" onclick="pickSc(this)"><span class="sc-icon">🍺</span><span class="sc-label">居酒屋</span></button>
+    </div>
+
+    <div class="section-label">難度</div>
+    <div class="level-row">
+      <button class="lv-btn on" onclick="pickLv(this)" data-l="初級">🌱 初級</button>
+      <button class="lv-btn" onclick="pickLv(this)" data-l="中級">🌿 中級</button>
+      <button class="lv-btn" onclick="pickLv(this)" data-l="進階">🌳 進階</button>
+    </div>
+
+    <div class="hint-input">
+      <div class="hint-label">對話要點（選填）</div>
+      <input type="text" id="hintInput" placeholder="例如：想詢問轉機資訊、要結帳找收據…">
+    </div>
+
+    <button class="btn-primary" id="genBtn" onclick="processGenerate()" disabled>生成新對話</button>
+  </div>
+</div>
+
+<!-- ══ READER ══ -->
+<div class="page" id="pageReader">
+  <div class="ph" id="readerPH">
+    <button class="ph-back" id="readerBack"><span class="mi" style="font-size:22px">arrow_back</span></button>
+    <span class="ph-title" id="readerTitle">閱讀模式</span>
+    <button class="ph-action primary" id="saveBtn" style="display:none" onclick="saveCurrentContent()">儲存對話</button>
+    <button id="readerMoreBtn" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1;letter-spacing:2px" onclick="showReaderMore()"><span class="mi" style="font-size:22px">more_horiz</span></button>
+  </div>
+  <!-- Difficulty filter removed — now global setting -->
+  <div class="reader-controls">
+    <span class="ctrl-label">顯示</span>
+    <div class="toggle-group">
+      <button class="tog on" id="tRuby" onclick="tog('ruby')">振假名</button>
+      <button class="tog on" id="tRomaji" onclick="tog('romaji')">羅馬音</button>
+      <button class="tog on" id="tZh" onclick="tog('zh')">中文</button>
+      <button class="tog" id="tPos" onclick="tog('pos')">詞性</button>
+    </div>
+  </div>
+  <div class="lyrics hide-pos" id="lyrics">
+    <p class="read-hint">點擊<span>整行</span>朗讀 ／ 點擊<span>單字</span>出現泡泡查詢 ／ <span>長按整行</span>編輯</p>
+  </div>
+  <div class="playbar">
+    <button class="play-btn" id="playBtn" onclick="togglePlay()">
+      <span id="playIcon"><span class="mi" style="font-size:20px">play_arrow</span></span><span id="playLabel">全部朗讀</span>
+    </button>
+    <span class="play-count" id="playCount"></span>
+  </div>
+</div>
+
+<!-- Bubble -->
+<div id="bubble">
+  <div id="bWord-wrap" style="display:flex;flex-direction:column;align-items:center;padding:0 14px;gap:3px">
+    <div style="display:flex;align-items:center;gap:6px;max-width:170px">
+      <span id="bWord" style="font-family:serif;font-size:15px;font-weight:700;color:#f0e8da;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+      <span id="bPos" style="font-size:10px;background:rgba(139,92,246,.2);color:#a78bfa;padding:1px 7px;border-radius:8px;white-space:nowrap;flex-shrink:0"></span>
+    </div>
+    <span id="bMeaning" style="font-size:11px;color:rgba(255,255,255,0.4);white-space:nowrap;max-width:170px;overflow:hidden;text-overflow:ellipsis"></span>
+  </div>
+  <div class="bub-div"></div>
+  <button class="bub-btn" id="bLookup">
+    <span class="mi" style="font-size:18px;color:var(--muted)">search</span>
+    <span style="font-size:12px;color:var(--text)">查詢</span>
+  </button>
+</div>
+
+<!-- Add action sheet -->
+<div id="addSheetOverlay" onclick="hideAddSheet()" style="position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .25s"></div>
+<div id="addSheet" style="position:fixed;left:0;right:0;bottom:0;z-index:700;background:var(--sheet-bg);border-radius:22px 22px 0 0;border-top:1px solid rgba(82,78,110,.35);box-shadow:0 -8px 40px rgba(0,0,0,.5);transform:translateY(100%);transition:transform .35s cubic-bezier(.32,.72,0,1);padding:0 0 32px">
+  <div style="width:38px;height:4px;background:#3a3250;border-radius:2px;margin:14px auto 20px"></div>
+  <div style="padding:0 16px">
+    <button onclick="hideAddSheet();showPage('pagePaste')" style="width:100%;display:flex;align-items:center;gap:16px;padding:16px;border-radius:14px;border:1px solid var(--border);background:var(--surface);cursor:pointer;text-align:left;color:var(--text);margin-bottom:10px;transition:border-color .15s" onmouseover="this.style.borderColor='rgba(196,162,79,.5)'" onmouseout="this.style.borderColor='var(--border)'">
+      <span style="font-size:26px;width:40px;text-align:center"><span class="mi" style="font-size:26px;color:var(--muted)">content_paste</span></span>
+      <div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:3px">貼入文字</div>
+        <div style="font-size:12px;color:var(--muted)">貼入任何日文——歌詞、文章、台詞、菜單</div>
+      </div>
+    </button>
+    <button onclick="hideAddSheet();showAiSearchDlg()" style="width:100%;display:flex;align-items:center;gap:16px;padding:16px;border-radius:14px;border:1px solid var(--border);background:var(--surface);cursor:pointer;text-align:left;color:var(--text);transition:border-color .15s" onmouseover="this.style.borderColor='rgba(139,92,246,.5)'" onmouseout="this.style.borderColor='var(--border)'">
+      <span style="font-size:26px;width:40px;text-align:center"><span class="mi" style="font-size:26px;color:var(--muted)">auto_awesome</span></span>
+      <div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:3px">AI 搜尋</div>
+        <div style="font-size:12px;color:var(--muted)">搜尋內容或生成日文對話</div>
+      </div>
+    </button>
+  </div>
+</div>
+
+<!-- Sheet -->
+<div id="overlay" onclick="closeSheet()"></div>
+<div id="sheet">
+  <div class="sh-handle"></div>
+  <div class="sh-header">
+    <div><div class="sh-word" id="shWord"></div><div class="sh-sub" id="shSub"></div></div>
+    <button class="sh-speak" id="shSpeak"><span class="mi" style="font-size:18px">volume_up</span></button>
+  </div>
+  <div class="sh-body" id="shBody"></div>
+</div>
+
+<!-- Processing -->
+<div id="processing">
+  <div class="big-spin"></div>
+  <p id="procMsg">AI 處理中…</p>
+  <small id="procSub">通常需要 10~30 秒</small>
+</div>
+
+<!-- Confirm dialog -->
+<div id="confirmDlg">
+  <div class="dlg-box">
+    <div class="dlg-title" id="dlgTitle"></div>
+    <div class="dlg-msg" id="dlgMsg"></div>
+    <div class="dlg-btns" id="dlgBtns"></div>
+  </div>
+</div>
+
+<script>
+// ══ API KEY ════════════════════════════════════════════════
+function getKey() { return localStorage.getItem('anthropic_api_key'); }
+function setKey(k) { localStorage.setItem('anthropic_api_key', k); }
+function promptForKey() {
+  const k = prompt(getKey() ? '更新 API Key（留空取消）：' : '請輸入 Anthropic API Key：', getKey() || '');
+  if (k && k.trim()) { setKey(k.trim()); }
+}
+function updateKeyStatus() {} // no-op, status removed from UI
+
+// ══ ELEVENLABS TTS ══════════════════════════════════════════
+const EL_VOICE_ID = 'baaIB19ClFmB5qcPSImI';
+function getELKey() { return localStorage.getItem('elevenlabs_api_key'); }
+function setELKey(k) { localStorage.setItem('elevenlabs_api_key', k); }
+function promptForELKey() {
+  const k = prompt(getELKey() ? '更新 ElevenLabs API Key（留空取消）：' : '請輸入 ElevenLabs API Key：', getELKey() || '');
+  if (k && k.trim()) { setELKey(k.trim()); }
+}
+
+// ── Audio Cache (IndexedDB) ──────────────────────────────────
+const EL_DB_NAME = 'el_audio_cache';
+const EL_DB_STORE = 'audio';
+let elDB = null;
+function openELDB() {
+  if (elDB) return Promise.resolve(elDB);
+  return new Promise((res, rej) => {
+    const req = indexedDB.open(EL_DB_NAME, 1);
+    req.onupgradeneeded = e => e.target.result.createObjectStore(EL_DB_STORE);
+    req.onsuccess = e => { elDB = e.target.result; res(elDB); };
+    req.onerror = () => rej();
+  });
+}
+async function getCachedAudio(key) {
+  try {
+    const db = await openELDB();
+    return new Promise(res => {
+      const req = db.transaction(EL_DB_STORE).objectStore(EL_DB_STORE).get(key);
+      req.onsuccess = () => res(req.result || null);
+      req.onerror = () => res(null);
+    });
+  } catch { return null; }
+}
+async function setCachedAudio(key, blob) {
+  try {
+    const db = await openELDB();
+    db.transaction(EL_DB_STORE, 'readwrite').objectStore(EL_DB_STORE).put(blob, key);
+  } catch {}
+}
+
+async function fetchELAudio(text) {
+  const elSpeed = 0.7;
+  const cacheKey = `${EL_VOICE_ID}:v2:${text}`;
+  const cached = await getCachedAudio(cacheKey);
+  if (cached) return cached;
+  const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${EL_VOICE_ID}`, {
+    method: 'POST',
+    headers: { 'xi-api-key': getELKey(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, model_id: 'eleven_multilingual_v2', language_code: 'ja', speed: elSpeed, voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
+  });
+  if (!res.ok) return null;
+  const blob = await res.blob();
+  await setCachedAudio(cacheKey, blob);
+  return blob;
+}
+
+// ── AudioContext（解決瀏覽器 autoplay 限制）──────────────────
+// 一旦在 user gesture 中 unlock，之後 async 操作後仍可播放
+let _audioCtx = null;
+let _currentELSrc = null;  // 目前播放中的 AudioBufferSourceNode
+let elAudio = null;         // 保留供 fallback 使用
+
+function getAudioCtx() {
+  if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return _audioCtx;
+}
+
+// 在 user gesture 中同步呼叫，讓 AudioContext 從 suspended → running
+function unlockAudioCtxSync() {
+  const ctx = getAudioCtx();
+  if (ctx.state === 'suspended') ctx.resume();
+}
+
+function stopCurrentEL() {
+  if (_currentELSrc) { try { _currentELSrc.stop(); } catch {} _currentELSrc = null; }
+  if (elAudio) { elAudio.pause(); elAudio = null; }
+}
+
+async function playBlobWithCtx(blob) {
+  const ctx = getAudioCtx();
+  if (ctx.state === 'suspended') await ctx.resume();
+  const arrayBuf = await blob.arrayBuffer();
+  const audioBuf = await ctx.decodeAudioData(arrayBuf);
+  return new Promise((resolve) => {
+    if (_currentELSrc) { try { _currentELSrc.stop(); } catch {} }
+    const src = ctx.createBufferSource();
+    _currentELSrc = src;
+    src.buffer = audioBuf;
+    src.connect(ctx.destination);
+    src.onended = () => { if (_currentELSrc === src) _currentELSrc = null; resolve(); };
+    src.start();
+  });
+}
+
+async function speakEL(text) {
+  if (!getELKey()) return false;
+  try {
+    stopCurrentEL();
+    const blob = await fetchELAudio(text);
+    if (!blob) return false;
+    await playBlobWithCtx(blob);
+    return true;
+  } catch { return false; }
+}
+
+async function speakELWithCallback(text, onEnd) {
+  if (!getELKey()) return false;
+  try {
+    stopCurrentEL();
+    const blob = await fetchELAudio(text);
+    if (!blob) return false;
+    await playBlobWithCtx(blob);
+    if (onEnd) onEnd();
+    return true;
+  } catch { return false; }
+}
+
+async function playELAndWait(text) {
+  if (!getELKey()) return false;
+  try {
+    stopCurrentEL();
+    const blob = await fetchELAudio(text);
+    if (!blob) return false;
+    await playBlobWithCtx(blob);
+    return true;
+  } catch { return false; }
+}
+
+// ══ STORAGE HELPERS ════════════════════════════════════════
+function lsGet(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } }
+function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} }
+
+// ══ CTX MENU (declared early so all functions can use it) ══
+const ctxMenu = document.getElementById('ctxMenu');
+const ctxOverlay = document.getElementById('ctxOverlay');
+
+// ══ PAGE NAVIGATION ════════════════════════════════════════
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ══ HOME GRID ══════════════════════════════════════════════
+const SCENARIO_ICONS = { '機場':'✈️','餐廳':'🍜','便利商店':'🏪','問路':'🗺️','飯店':'🏨','購物':'🛍️','看醫生':'🏥','電車':'🚃','居酒屋':'🍺' };
+const DEFAULT_SCENARIOS = ['機場','餐廳'];
+
+function buildHomeGrids() {
+  buildScenarioGrid();
+  buildMyContentGrid();
+}
+
+function buildScenarioGrid() {
+  const grid = document.getElementById('scenarioHomeGrid');
+  grid.innerHTML = '';
+  const allScenarios = [...DEFAULT_SCENARIOS, ...(lsGet('custom_scenarios') || [])];
+  allScenarios.forEach(sc => {
+    const card = document.createElement('div');
+    card.className = 'sc-home-card';
+    card.innerHTML = `<div class="sc-home-card-icon">${SCENARIO_ICONS[sc] || '💬'}</div><div class="sc-home-card-title">${sc}</div>`;
+    card.onclick = () => openScenario(sc);
+    grid.appendChild(card);
+  });
+  const addCard = document.createElement('div');
+  addCard.className = 'sc-add-card';
+  addCard.innerHTML = '<span class="mi" style="font-size:22px">add</span><span style="font-size:11px">新增情境</span>';
+  addCard.onclick = showNewScDlg;
+  grid.appendChild(addCard);
+}
+
+function makeScenarioCard(sc, cached) {
+  const card = document.createElement('div');
+  card.className = 'content-card';
+  card.innerHTML = `
+    <div class="card-top">
+      <div class="card-icon">${SCENARIO_ICONS[sc] || '💬'}</div>
+      <div class="card-title">${sc}</div>
+      <div class="card-meta">${cached ? '已有內容' : '尚未生成'}</div>
+    </div>
+    <div class="card-bottom">
+      ${cached ? `<button class="card-btn accent" onclick="openScenario('${sc}');event.stopPropagation()">目前對話</button>` : ''}
+      <button class="card-btn" onclick="goGenerateScenario('${sc}');event.stopPropagation()">${cached ? '生成新對話' : '生成對話'}</button>
+    </div>`;
+  return card;
+}
+
+function buildMyContentGrid() {
+  const grid = document.getElementById('myContentGrid');
+  grid.innerHTML = '';
+
+  // Saved paste/search content
+  const saved = lsGet('saved_content') || [];
+  saved.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'my-content-item';
+    el.innerHTML = `<span class="my-content-icon"><span class="mi" style="font-size:22px;color:var(--muted)">article</span></span><div class="my-content-info"><div class="my-content-title">${item.title}</div><div class="my-content-meta">${item.date}</div></div><span class="my-content-arrow"><span class="mi" style="font-size:20px">chevron_right</span></span>`;
+    el.onclick = () => openSavedContent(i);
+    grid.appendChild(el);
+  });
+
+  // Add content button — same size as list items, dashed border
+  const addItem = document.createElement('div');
+  addItem.className = 'my-content-item';
+  addItem.style.cssText = 'border: 2px dashed var(--border); justify-content: center; gap: 8px; color: var(--muted);';
+  addItem.innerHTML = `<span class="mi" style="font-size:20px">add</span><span style="font-size:14px">新增內容</span>`;
+  addItem.onmouseover = () => { addItem.style.borderColor = 'rgba(196,162,79,0.5)'; addItem.style.color = 'var(--accent)'; };
+  addItem.onmouseout = () => { addItem.style.borderColor = 'var(--border)'; addItem.style.color = 'var(--muted)'; };
+  addItem.onclick = showAddSheet;
+  grid.appendChild(addItem);
+}
+
+function setDiffFilter(show) {
+  const el = document.getElementById('diffFilter');
+  if (el) el.style.display = show ? 'flex' : 'none';
+}
+
+let currentDeleteFn = null;
+
+function showReaderMore() {
+  // Position context menu near the button
+  const btn = document.getElementById('readerMoreBtn');
+  const rect = btn.getBoundingClientRect();
+  const menuW = 180;
+  let x = rect.right - menuW;
+  let y = rect.bottom + 6;
+  ctxMenu.style.left = Math.max(8, x) + 'px';
+  ctxMenu.style.top = y + 'px';
+
+  document.getElementById('ctxEdit').style.display = 'none';
+  document.getElementById('ctxInsert').style.display = 'none';
+  document.getElementById('ctxELKey').style.display = 'none';
+  document.getElementById('ctxDelete').style.display = 'flex';
+  document.getElementById('ctxDelete').innerHTML = '<span>刪除此內容</span><span class="mi ctx-icon" style="font-size:18px">delete</span>';
+  document.getElementById('ctxDelete').className = 'ctx-item danger';
+  document.getElementById('ctxDelete').onclick = () => {
+    hideCtx();
+    if (currentDeleteFn) currentDeleteFn();
+  };
+
+  ctxOverlay.classList.add('show');
+  ctxMenu.classList.add('show');
+}
+
+function resetCtxItems() {
+  document.getElementById('ctxEdit').style.display = 'flex';
+  document.getElementById('ctxInsert').style.display = 'flex';
+  document.getElementById('ctxDelete').style.display = 'flex';
+  document.getElementById('ctxEdit').innerHTML = '<span>編輯這句</span><span class="mi ctx-icon" style="font-size:18px">edit</span>';
+  document.getElementById('ctxInsert').innerHTML = '<span>在前面插入一句</span><span class="mi ctx-icon" style="font-size:18px">add</span>';
+  document.getElementById('ctxDelete').innerHTML = '<span>刪除</span><span class="mi ctx-icon" style="font-size:18px">delete</span>';
+  document.getElementById('ctxDelete').className = 'ctx-item danger';
+}
+let currentScenario = null;
+let currentDiff = '初級';
+
+function openScenario(sc) {
+  currentScenario = sc;
+  currentDiff = '初級';
+
+  document.querySelectorAll('.diff-btn').forEach((b,i) => b.classList.toggle('on', i===0));
+  setDiffFilter(true);
+  document.getElementById('readerTitle').textContent = sc;
+  document.getElementById('saveBtn').style.display = 'none';
+  document.getElementById('readerMoreBtn').style.display = '';
+
+  currentDeleteFn = () => {
+    if (!confirm(`確定刪除「${sc}」情境？`)) return;
+    ['初級','中級','進階'].forEach(d => localStorage.removeItem(`sc_${sc}_${d}`));
+    const customs = lsGet('custom_scenarios') || [];
+    lsSet('custom_scenarios', customs.filter(c => c !== sc));
+    showPage('pageHome'); buildHomeGrids();
+  };
+
+  let genNewBtn = document.getElementById('genNewBtn');
+  if (!genNewBtn) {
+    genNewBtn = document.createElement('button');
+    genNewBtn.id = 'genNewBtn'; genNewBtn.className = 'ph-action';
+    genNewBtn.textContent = '生成新對話';
+    document.getElementById('readerPH').insertBefore(genNewBtn, document.getElementById('readerMoreBtn'));
+  }
+  genNewBtn.style.display = '';
+  genNewBtn.onclick = () => goGenerateScenario(sc);
+
+  loadDiffContent(sc, '初級');
+  setupReaderBack(() => {
+    setDiffFilter(false);
+    const g = document.getElementById('genNewBtn'); if (g) g.style.display = 'none';
+    document.getElementById('readerMoreBtn').style.display = 'none';
+    resetCtxItems(); showPage('pageHome');
+  });
+  buildReader(); showPage('pageReader');
+}
+
+function switchDiff(diff, btn) {
+  document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  currentDiff = diff;
+  loadDiffContent(currentScenario, diff);
+  buildReader();
+}
+
+function loadDiffContent(sc, diff) {
+  const userCached = lsGet(`sc_${sc}_${diff}`);
+  if (userCached) { currentLines = userCached.lines; }
+  else {
+    const preset = PRESET_SCENARIOS[sc]?.[diff];
+    currentLines = preset || [{ words: [{k:"まだありません", r:"まだありません", ro:"mada arimasen", zh:"尚無內容"}], zh:"尚未生成此難度的內容，請使用「生成新對話」" }];
+  }
+  // Set up for potential editing/saving
+  pendingLines = currentLines;
+  pendingSaveKey = `sc_${sc}_${diff}`;
+  isTempContent = false;
+  document.getElementById('saveBtn').style.display = 'none';
+}
+
+function goGenerateScenario(sc) {
+  // Pre-select scenario on AI page
+  showPage('pageAI');
+  setTimeout(() => {
+    document.querySelectorAll('.sc-btn').forEach(b => b.classList.remove('on'));
+    const btn = document.querySelector(`.sc-btn[data-s="${sc}"]`);
+    if (btn) { btn.classList.add('on'); selectedSc = sc; document.getElementById('genBtn').disabled = false; }
+  }, 50);
+}
+
+
+function openSavedContent(i) {
+  const saved = lsGet('saved_content') || [];
+  if (!saved[i]) return;
+  currentLines = saved[i].lines;
+  isTempContent = false;
+  pendingTitle = saved[i].title;
+  pendingLines = saved[i].lines;
+  pendingSaveKey = '';
+  pendingOriginalTitle = saved[i].title;
+  document.getElementById('readerTitle').textContent = saved[i].title;
+  document.getElementById('saveBtn').style.display = 'none';
+  setDiffFilter(false);
+  const g = document.getElementById('genNewBtn'); if (g) g.style.display = 'none';
+  document.getElementById('readerMoreBtn').style.display = '';
+  currentDeleteFn = () => {
+    if (!confirm(`確定刪除「${saved[i].title}」？`)) return;
+    const list = lsGet('saved_content') || [];
+    list.splice(i, 1); lsSet('saved_content', list);
+    showPage('pageHome'); buildHomeGrids();
+  };
+  resetCtxItems();
+  setupReaderBack(() => {
+    document.getElementById('readerMoreBtn').style.display = 'none';
+    resetCtxItems(); showPage('pageHome');
+  });
+  buildReader(); showPage('pageReader');
+}
+
+// ══ PASTE ══════════════════════════════════════════════════
+document.getElementById('pasteInput').addEventListener('input', function() {
+  document.getElementById('pasteCount').textContent = this.value.length + ' 字';
+});
+
+async function processPaste() {
+  const text = document.getElementById('pasteInput').value.trim();
+  if (!text) { alert('請先貼入日文文字'); return; }
+  if (!getKey()) { promptForKey(); return; }
+  showProc('AI 分析文字中…');
+  try {
+    const lines = await parseText(text);
+    currentLines = lines;
+    isTempContent = true;
+    pendingTitle = '貼入文字';
+    pendingLines = lines;
+    pendingSaveKey = '';
+    pendingOriginalTitle = '';
+    document.getElementById('readerTitle').textContent = '貼入文字';
+    document.getElementById('saveBtn').style.display = '';
+    setupReaderBack(confirmDiscard);
+    buildReader(); hideProc(); showPage('pageReader');
+  } catch(e) { hideProc(); alert('處理失敗：' + e.message); }
+}
+
+// ══ AI SEARCH ══════════════════════════════════════════════
+async function processSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (!q) { alert('請輸入搜尋關鍵字'); return; }
+  if (!getKey()) { promptForKey(); return; }
+  showProc('AI 搜尋中…');
+  try {
+    const lines = await aiSearch(q);
+    currentLines = lines;
+    isTempContent = true;
+    pendingTitle = q;
+    pendingLines = lines;
+    pendingSaveKey = '';
+    pendingOriginalTitle = '';
+    document.getElementById('readerTitle').textContent = q;
+    document.getElementById('saveBtn').style.display = '';
+    setupReaderBack(confirmDiscard);
+    buildReader(); hideProc(); showPage('pageReader');
+  } catch(e) { hideProc(); alert('搜尋失敗：' + e.message); }
+}
+
+function scrollToSection(id, btn) {
+  document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ══ NEW SCENARIO DIALOG ═════════════════════════════════════
+function showNewScDlg() {
+  document.getElementById('newScInput').value = '';
+  document.getElementById('newScOverlay').style.display = 'flex';
+  document.getElementById('newScDlg').style.display = 'flex';
+  setTimeout(() => document.getElementById('newScInput').focus(), 100);
+}
+function hideNewScDlg() {
+  document.getElementById('newScOverlay').style.display = 'none';
+  document.getElementById('newScDlg').style.display = 'none';
+}
+
+async function processNewScenario() {
+  const desc = document.getElementById('newScInput').value.trim();
+  if (!desc) { alert('請輸入情境說明'); return; }
+  if (!getKey()) { promptForKey(); return; }
+  hideNewScDlg();
+
+  // Extract scenario name from description using AI, then generate all 3 levels
+  showProc('AI 生成三個難度的對話中…\n通常需要 30~60 秒');
+  try {
+    // Step 1: get scenario name
+    const nameData = await callClaude(`請從以下情境說明中，提取一個簡短的情境名稱（2~5個中文字，例如：藥局、房東溝通、計程車）。
+情境說明：${desc}
+只回傳 JSON：{"name":"情境名稱"}`, 100);
+    const scName = nameData.name || desc.slice(0, 5);
+
+    // Step 2: generate all 3 levels in parallel
+    const [初級Lines, 中級Lines, 進階Lines] = await Promise.all([
+      aiGenerate(scName, '初級', desc),
+      aiGenerate(scName, '中級', desc),
+      aiGenerate(scName, '進階', desc),
+    ]);
+
+    // Save all 3
+    lsSet(`sc_${scName}_初級`, { lines: 初級Lines });
+    lsSet(`sc_${scName}_中級`, { lines: 中級Lines });
+    lsSet(`sc_${scName}_進階`, { lines: 進階Lines });
+
+    // Add to custom scenarios
+    const customs = lsGet('custom_scenarios') || [];
+    if (!customs.includes(scName)) { customs.push(scName); lsSet('custom_scenarios', customs); }
+    SCENARIO_ICONS[scName] = '💬';
+
+    hideProc();
+    buildHomeGrids();
+
+    // Open the new scenario
+    openScenario(scName);
+  } catch(e) {
+    hideProc();
+    alert('生成失敗：' + e.message);
+  }
+}
+
+// ══ AI GENERATE ════════════════════════════════════════════
+let selectedSc = null, selectedLv = '初級';
+
+function pickSc(btn) {
+  document.querySelectorAll('.sc-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  selectedSc = btn.dataset.s;
+  document.getElementById('genBtn').disabled = false;
+}
+function pickLv(btn) {
+  document.querySelectorAll('.lv-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  selectedLv = btn.dataset.l;
+}
+
+async function processGenerate() {
+  if (!selectedSc) { alert('請選擇情境'); return; }
+  if (!getKey()) { promptForKey(); return; }
+  const hint = document.getElementById('hintInput').value.trim();
+  showProc('AI 生成對話中…');
+  try {
+    const lines = await aiGenerate(selectedSc, selectedLv, hint);
+    currentLines = lines;
+    isTempContent = true;
+    pendingTitle = selectedSc + '・' + selectedLv;
+    pendingLines = lines;
+    pendingSaveKey = `sc_${selectedSc}_${selectedLv}`;
+    pendingOriginalTitle = '';
+    document.getElementById('readerTitle').textContent = pendingTitle;
+    document.getElementById('saveBtn').style.display = '';
+    setupReaderBack(confirmDiscard);
+    buildReader(); hideProc(); showPage('pageReader');
+  } catch(e) { hideProc(); alert('生成失敗：' + e.message); }
+}
+
+// ══ SAVE / DISCARD ══════════════════════════════════════════
+let isTempContent = false;
+let pendingTitle = '';
+let pendingLines = [];
+let pendingSaveKey = '';
+let pendingOriginalTitle = '';
+
+function saveCurrentContent() {
+  if (!pendingLines.length) return;
+  if (pendingSaveKey) {
+    // scenario with difficulty
+    lsSet(pendingSaveKey, { lines: pendingLines });
+    const sc = pendingSaveKey.replace(/^sc_/, '').replace(/_初級|_中級|_進階$/, '');
+    if (!DEFAULT_SCENARIOS.includes(sc)) {
+      const customs = lsGet('custom_scenarios') || [];
+      if (!customs.includes(sc)) { customs.push(sc); lsSet('custom_scenarios', customs); }
+    }
+  } else {
+    const saved = lsGet('saved_content') || [];
+    const idx = pendingOriginalTitle ? saved.findIndex(item => item.title === pendingOriginalTitle) : -1;
+    if (idx >= 0) {
+      saved[idx] = { title: pendingTitle, lines: pendingLines, date: saved[idx].date };
+    } else {
+      saved.unshift({ title: pendingTitle, lines: pendingLines, date: new Date().toLocaleDateString('zh-TW') });
+    }
+    lsSet('saved_content', saved.slice(0, 20));
+    pendingOriginalTitle = pendingTitle;
+  }
+  isTempContent = false;
+  document.getElementById('saveBtn').style.display = 'none';
+  buildHomeGrids();
+}
+
+function confirmDiscard() {
+  if (!isTempContent) { showPage('pageHome'); return; }
+  showConfirm('放棄這次生成的對話？', '尚未儲存的內容將會消失。',
+    [{ label: '放棄', cls: 'danger', action: () => { isTempContent = false; hideConfirm(); showPage('pageHome'); stopPlay(); } },
+     { label: '繼續編輯', cls: 'cancel', action: hideConfirm }]);
+}
+
+function setupReaderBack(fn) {
+  document.getElementById('readerBack').onclick = fn;
+}
+
+// ══ CONFIRM DIALOG ══════════════════════════════════════════
+function showConfirm(title, msg, btns) {
+  document.getElementById('dlgTitle').textContent = title;
+  document.getElementById('dlgMsg').textContent = msg;
+  const btnsEl = document.getElementById('dlgBtns');
+  btnsEl.innerHTML = '';
+  btns.forEach(b => {
+    const btn = document.createElement('button');
+    btn.className = 'dlg-btn ' + b.cls;
+    btn.textContent = b.label;
+    btn.onclick = b.action;
+    btnsEl.appendChild(btn);
+  });
+  document.getElementById('confirmDlg').classList.add('show');
+}
+function hideConfirm() { document.getElementById('confirmDlg').classList.remove('show'); }
+
+// ══ PROCESSING ══════════════════════════════════════════════
+function showProc(msg) { document.getElementById('procMsg').textContent = msg; document.getElementById('processing').classList.add('show'); }
+function hideProc() { document.getElementById('processing').classList.remove('show'); }
+
+// ══ CLAUDE API ══════════════════════════════════════════════
+async function callClaude(prompt, maxTokens = 6000) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-api-key': getKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+    body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: maxTokens, messages: [{ role: 'user', content: prompt }] })
+  });
+  const json = await res.json();
+  const raw = json.content?.find(b => b.type === 'text')?.text || '';
+  return JSON.parse(raw.replace(/```json|```/g,'').trim());
+}
+
+async function parseText(text) {
+  const d = await callClaude(`你是日語教師。將以下日文文本拆解成學習素材，按句子拆分，每句拆解單字加振假名和中文意思。最多30行。
+每個詞彙必須標注詞性（pos）。詞性符號：名／動・原形／動・た形／動・て形／動・たい／動・ている／形／形動／副／助／助動／接／感
+
+文本：${text.slice(0,2000)}
+
+僅回傳JSON（不加markdown）：{"lines":[{"words":[{"k":"日文","r":"讀音","ro":"羅馬拼音","zh":"中文意思","pos":"詞性"}],"zh":"整句中文翻譯"}]}`);
+  return d.lines || [];
+}
+
+async function aiSearch(query) {
+  const d = await callClaude(`你是日語教師。用戶搜尋：「${query}」。根據你的知識提供相關日文文本（10~20行），拆解成學習素材。
+每個詞彙必須標注詞性（pos）。詞性符號：名／動・原形／動・た形／動・て形／動・たい／動・ている／形／形動／副／助／助動／接／感
+
+僅回傳JSON（不加markdown）：{"lines":[{"words":[{"k":"日文","r":"讀音","ro":"羅馬拼音","zh":"中文意思","pos":"詞性"}],"zh":"整句中文翻譯"}]}`);
+  return d.lines || [];
+}
+
+async function aiGenerate(sc, lv, hint) {
+  const useLv = lv || (DIFF_LEVELS.find(l => l.id === getDiff()) || DIFF_LEVELS[0]).label;
+  const lvDesc = {'簡單':'JLPT N5-N4','中等':'JLPT N3-N2','進階':'JLPT N1','大師':'N1以上'}[useLv] || 'JLPT N5-N4';
+  const hintStr = hint ? `\n對話要點：${hint}` : '';
+  const d = await callClaude(`你是日語教師。生成「${sc}」情境日文對話，難度：${useLv}（${lvDesc}）。8~15句，自然實用。${hintStr}
+
+每個詞彙必須標注詞性（pos）。詞性符號：名／動・原形／動・た形／動・て形／動・たい／動・ている／形／形動／副／助／助動／接／感
+
+僅回傳JSON（不加markdown）：{"lines":[{"words":[{"k":"日文","r":"讀音","ro":"羅馬拼音","zh":"中文意思","pos":"詞性"}],"zh":"整句中文翻譯","speaker":"說話者"}]}`);
+  return d.lines || [];
+}
+
+// ══ GLOBAL DIFFICULTY ════════════════════════════════════════
+const DIFF_LEVELS = [
+  { id: 'N5N4', label: '簡單', jlpt: 'N5-N4', desc: '基礎詞彙、平假名為主、日常常用詞', icon: '🌱' },
+  { id: 'N3N2', label: '中等', jlpt: 'N3-N2', desc: '日常會話、漢字混用、基本文法', icon: '🌿' },
+  { id: 'N1',   label: '進階', jlpt: 'N1',    desc: '自然語境、深度文法分析、慣用語', icon: '🌳' },
+  { id: 'ADV',  label: '大師', jlpt: 'N1+',   desc: '文學表達、細微語感、高級慣用句', icon: '🏯' },
+];
+
+function getDiff() { return lsGet('global_diff') || 'N5N4'; }
+function setDiff(id) { lsSet('global_diff', id); updateDiffBadge(); }
+
+function showSettingsMenu() {
+  const btn = document.querySelector('#keyBar button');
+  const rect = btn.getBoundingClientRect();
+  const menuW = 220;
+  let x = rect.right - menuW;
+  let y = rect.bottom + 6;
+  if (x < 8) x = 8;
+  ctxMenu.style.left = x + 'px';
+  ctxMenu.style.top = y + 'px';
+
+  document.getElementById('ctxEdit').style.display = '';
+  document.getElementById('ctxInsert').style.display = '';
+  document.getElementById('ctxDelete').style.display = 'none';
+
+  const diff = DIFF_LEVELS.find(l => l.id === getDiff()) || DIFF_LEVELS[0];
+  document.getElementById('ctxEdit').innerHTML = `<span>學習難度</span><span class="ctx-icon">${diff.icon} ${diff.jlpt}</span>`;
+  document.getElementById('ctxEdit').className = 'ctx-item';
+  document.getElementById('ctxEdit').onclick = () => { hideCtx(); showDiffSettings(); };
+
+  document.getElementById('ctxInsert').innerHTML = `<span>設定 Anthropic Key</span><span class="mi ctx-icon" style="font-size:18px">key</span>`;
+  document.getElementById('ctxInsert').className = 'ctx-item';
+  document.getElementById('ctxInsert').onclick = () => { hideCtx(); promptForKey(); };
+
+  const elKeyItem = document.getElementById('ctxELKey');
+  elKeyItem.style.display = '';
+  elKeyItem.innerHTML = `<span>設定 ElevenLabs Key ${getELKey() ? '✓' : ''}</span><span class="mi ctx-icon" style="font-size:18px">record_voice_over</span>`;
+  elKeyItem.className = 'ctx-item';
+  elKeyItem.onclick = () => { hideCtx(); promptForELKey(); };
+
+  document.getElementById('ctxDelete').style.display = 'none';
+
+  ctxOverlay.classList.add('show');
+  ctxMenu.classList.add('show');
+}
+
+function updateDiffBadge() {} // no-op, badge removed
+
+function showDiffSettings() {
+  const current = getDiff();
+  const opts = document.getElementById('diffOptions');
+  opts.innerHTML = '';
+  DIFF_LEVELS.forEach(lv => {
+    const btn = document.createElement('button');
+    btn.style.cssText = `display:flex;align-items:center;gap:14px;width:100%;padding:14px 16px;border-radius:12px;border:1px solid ${lv.id===current?'rgba(196,162,79,.6)':'var(--border)'};background:${lv.id===current?'rgba(196,162,79,.08)':'var(--surface)'};cursor:pointer;text-align:left;font-family:inherit;transition:all .18s;`;
+    btn.innerHTML = `<span style="font-size:22px">${lv.icon}</span><div style="flex:1"><div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:2px">${lv.jlpt} ${lv.label}</div><div style="font-size:12px;color:var(--muted)">${lv.desc}</div></div>${lv.id===current?'<span style="color:var(--accent);font-size:16px">✓</span>':''}`;
+    btn.onclick = () => { setDiff(lv.id); hideDiffSettings(); };
+    opts.appendChild(btn);
+  });
+  document.getElementById('diffOverlay').style.display = 'block';
+  document.getElementById('diffSheet').style.display = 'flex';
+}
+
+function hideDiffSettings() {
+  document.getElementById('diffOverlay').style.display = 'none';
+  document.getElementById('diffSheet').style.display = 'none';
+}
+
+function getDiffPrompt() {
+  const d = getDiff();
+  const map = {
+    'N5N4': '程度：JLPT N5-N4 初學者。請用最簡單的詞彙解釋，例句要短且常用，不需要深入語法分析。',
+    'N3N2': '程度：JLPT N3-N2 中級。解釋要涵蓋主要用法，例句自然，語法拆解要清楚。',
+    'N1':   '程度：JLPT N1 進階。深入分析語法結構、細微用法差異，例句可以複雜一些。',
+    'ADV':  '程度：N1以上 大師。包含文學用法、慣用語、語感細節，例句要道地自然，可加上文化脈絡。',
+  };
+  return map[d] || map['N5N4'];
+}
+
+// ══ WORD LOOKUP ══════════════════════════════════════════════
+async function fetchExplanation(word, forceRefresh = false) {
+  if (!getKey()) { shBody.innerHTML = '<p style="color:#9f6a6a;font-size:13px;padding:8px 0">請先設定 API Key。</p>'; return; }
+  const diff = getDiff();
+  const ck = `word_${word.k}_${diff}`;
+  const cached = lsGet(ck);
+  if (cached && !forceRefresh) { renderSheet(cached, true); return; }
+  shBody.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px 0;color:var(--muted)"><div style="width:28px;height:28px;border:3px solid rgba(139,92,246,.2);border-top-color:#a78bfa;border-radius:50%;animation:spin .8s linear infinite"></div><div style="font-size:13px">生成中…</div></div>`;
+  try {
+    const d = await callClaude(`你是日語教師，用繁體中文（台灣用語）說明以下日文詞彙。
+${getDiffPrompt()}
+詞彙：${word.k}（${word.r || ''}）
+請分析：1.詞性標示 2.詞意用法 3.語法結構拆解（例：守りたい → 守る（動詞）＋ たい（願望助動詞）） 4.2~3個例句（附拼音與中文）
+詞性符號：名／動・原形／動・た形／動・て形／動・たい／動・ている／形／形動／副／助／助動／接／感
+僅回傳JSON（不加markdown）：{"pos":"詞性（如：動・たい形）","meaning":"說明","grammar":[{"part":"部分","type":"詞性","explain":"說明"}],"examples":[{"jp":"例句","romaji":"拼音","zh":"翻譯"}]}`, 1600);
+    lsSet(ck, d);
+    renderSheet(d, false);
+  } catch(e) { shBody.innerHTML = `<p style="color:#7a6f85;font-size:13px;padding:8px 0">無法取得說明（${e.message}）</p>`; }
+}
+
+function renderSheet(data, fromCache) {
+  const diff = DIFF_LEVELS.find(l => l.id === getDiff()) || DIFF_LEVELS[0];
+  let html = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap">`;
+  html += `<span style="font-size:10px;background:rgba(142,125,175,.12);border:1px solid rgba(142,125,175,.28);color:#a496be;padding:2px 8px;border-radius:20px;">${diff.icon} ${diff.jlpt} ${diff.label}</span>`;
+  if (fromCache) html += `<span style="font-size:10px;background:rgba(106,159,106,.12);border:1px solid rgba(106,159,106,.25);color:#6a9f6a;padding:2px 8px;border-radius:20px;">✓ 已快取</span>`;
+  html += `<button onclick="fetchExplanation(window._sheetWord, true)" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:2px 10px;border-radius:20px;cursor:pointer;font-family:inherit"><span class="mi" style="font-size:13px;vertical-align:middle">refresh</span> 重新生成</button>`;
+  html += `</div>`;
+  if (data.pos) {
+    html += `<div style="margin-bottom:14px"><span style="font-size:13px;background:rgba(142,125,175,.13);border:1px solid rgba(142,125,175,.32);color:#a496be;padding:4px 12px;border-radius:20px;font-weight:600;letter-spacing:.05em">${data.pos}</span></div>`;
+  }
+  html += `<div class="sec-lbl">詞意 · 用法</div><div class="meaning-box">${data.meaning}</div>`;
+  if (data.grammar?.length) {
+    html += `<div class="sec-lbl" style="margin-top:20px">語法結構</div><div style="display:flex;flex-wrap:wrap;gap:8px">`;
+    data.grammar.forEach(g => {
+      html += `<div style="background:rgba(142,125,175,.08);border:1px solid rgba(142,125,175,.2);border-radius:10px;padding:10px 14px;flex:1;min-width:110px"><div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><span style="font-family:serif;font-size:18px;font-weight:700;color:#f0e8da">${g.part}</span><span style="font-size:10px;background:rgba(142,125,175,.18);color:#a496be;padding:2px 7px;border-radius:10px;white-space:nowrap">${g.type}</span></div><div style="font-size:12px;color:#9e95b0;line-height:1.5">${g.explain}</div></div>`;
+    });
+    html += '</div>';
+  }
+  if (data.examples?.length) {
+    html += `<div class="sec-lbl" style="margin-top:20px">例句</div>`;
+    data.examples.forEach(ex => {
+      html += `<div class="ex-card"><div class="ex-jp-row"><span class="ex-jp">${ex.jp}</span><button class="ex-speak" data-jp="${(ex.jp||'').replace(/"/g,'&quot;')}"><span class="mi" style="font-size:18px">volume_up</span></button></div><div class="ex-romaji">${ex.romaji||''}</div><div class="ex-zh">${ex.zh||''}</div></div>`;
+    });
+  }
+  shBody.innerHTML = html;
+  shBody.querySelectorAll('.ex-speak').forEach(b => { b.onclick = () => speakDirect(b.dataset.jp); });
+}
+
+// ══ READER ══════════════════════════════════════════════════
+let currentLines = [], lineEls = [], activeWord = null;
+let rate = 0.7, isPlaying = false, stopFlag = false;
+let currentContentKey = '';
+let isEditMode = false; // tracks if content has been edited (unsaved)
+
+function buildReader() {
+  const container = document.getElementById('lyrics');
+  const hint = container.querySelector('.read-hint');
+  container.innerHTML = '';
+  if (hint) container.appendChild(hint);
+  lineEls = [];
+
+  currentLines.forEach((line, i) => {
+    if (line.d || line.type === 'divider') {
+      const d = document.createElement('div'); d.className = 'divider';
+      container.appendChild(d); lineEls.push(null); return;
+    }
+    if (line.speaker) {
+      const sp = document.createElement('div'); sp.className = 'speaker-tag';
+      sp.textContent = line.speaker; container.appendChild(sp);
+    }
+    const el = document.createElement('div'); el.className = 'line';
+
+    // Click = speak line
+    el.addEventListener('click', e => { if (e.target.closest('.wu')) return; speakLine(i, el); });
+
+    // Long press = edit menu
+    let pressTimer;
+    el.addEventListener('pointerdown', () => {
+      pressTimer = setTimeout(() => showLineMenu(i, el), 600);
+    });
+    el.addEventListener('pointerup', () => clearTimeout(pressTimer));
+    el.addEventListener('pointercancel', () => clearTimeout(pressTimer));
+    el.addEventListener('pointermove', () => clearTimeout(pressTimer));
+
+    const jpRow = document.createElement('div'); jpRow.className = 'jp-row';
+    (line.words || []).forEach(w => {
+      const wu = document.createElement('span'); wu.className = 'wu';
+      const rb = document.createElement('span'); rb.className = 'ruby'; rb.textContent = w.r || '';
+      const kj = document.createElement('span'); kj.className = 'kanji'; kj.textContent = w.k || '';
+      const ps = document.createElement('span'); ps.className = 'pos-row'; ps.textContent = w.pos || '';
+      wu.appendChild(rb); wu.appendChild(kj); wu.appendChild(ps);
+      wu.addEventListener('click', e => { e.stopPropagation(); showBubble(w, wu); });
+      jpRow.appendChild(wu);
+    });
+    const ro = document.createElement('div'); ro.className = 'romaji-row';
+    ro.textContent = (line.words || []).map(w => w.ro || '').join(' ');
+    const zh = document.createElement('div'); zh.className = 'zh-row'; zh.textContent = line.zh || '';
+    el.appendChild(jpRow); el.appendChild(ro); el.appendChild(zh);
+    container.appendChild(el); lineEls.push(el);
+  });
+
+  // Auto-focus first non-divider line
+  const firstIdx = currentLines.findIndex(l => l && !l.d && l.type !== 'divider');
+  if (firstIdx >= 0 && lineEls[firstIdx]) {
+    lineEls[firstIdx].classList.add('playing');
+  }
+}
+
+function showReaderMore() {
+  const btn = document.getElementById('readerMoreBtn');
+  const rect = btn.getBoundingClientRect();
+  const menuW = 200;
+  let x = rect.right - menuW;
+  let y = rect.bottom + 6;
+  if (x < 8) x = 8;
+  ctxMenu.style.left = x + 'px';
+  ctxMenu.style.top = y + 'px';
+
+  // Show all items, restore insert, repurpose for reader actions
+  document.getElementById('ctxEdit').style.display = '';
+  document.getElementById('ctxInsert').style.display = '';
+  document.getElementById('ctxDelete').style.display = '';
+
+  document.getElementById('ctxEdit').innerHTML = '<span>編輯名稱</span><span class="mi ctx-icon" style="font-size:18px">edit</span>';
+  document.getElementById('ctxEdit').className = 'ctx-item';
+  document.getElementById('ctxEdit').onclick = () => { hideCtx(); editReaderTitle(); };
+
+  document.getElementById('ctxInsert').style.display = 'none';
+
+  document.getElementById('ctxDelete').innerHTML = '<span>刪除內容</span><span class="mi ctx-icon" style="font-size:18px">delete</span>';
+  document.getElementById('ctxDelete').className = 'ctx-item danger';
+  document.getElementById('ctxDelete').onclick = () => { hideCtx(); deleteCurrentContent(); };
+
+  ctxOverlay.classList.add('show');
+  ctxMenu.classList.add('show');
+}
+
+function deleteCurrentContent() {
+  if (!confirm('確定刪除這份內容？\n此動作無法復原。')) return;
+  if (pendingSaveKey) {
+    // Remove all difficulty levels for this scenario
+    const sc = pendingSaveKey.replace(/^sc_/, '').replace(/_初級|_中級|_進階$/, '');
+    ['初級','中級','進階'].forEach(lv => localStorage.removeItem(`sc_${sc}_${lv}`));
+    // Remove from custom scenarios
+    const customs = lsGet('custom_scenarios') || [];
+    const updated = customs.filter(c => c !== sc);
+    lsSet('custom_scenarios', updated);
+  } else if (pendingTitle) {
+    // Remove from saved content
+    const saved = lsGet('saved_content') || [];
+    const matchTitle = pendingOriginalTitle || pendingTitle;
+    const updated = saved.filter(item => item.title !== matchTitle);
+    lsSet('saved_content', updated);
+  }
+  buildHomeGrids();
+  showPage('pageHome');
+  stopPlay();
+}
+
+function editReaderTitle() {
+  const current = document.getElementById('readerTitle').textContent;
+  const newTitle = prompt('編輯名稱：', current);
+  if (!newTitle || !newTitle.trim() || newTitle.trim() === current) return;
+  const trimmed = newTitle.trim();
+  document.getElementById('readerTitle').textContent = trimmed;
+  pendingTitle = trimmed;
+
+  // 已儲存的「你的內容」：改名直接生效，不用按儲存
+  if (!pendingSaveKey && pendingOriginalTitle) {
+    const saved = lsGet('saved_content') || [];
+    const idx = saved.findIndex(item => item.title === pendingOriginalTitle);
+    if (idx >= 0) {
+      saved[idx] = { title: trimmed, lines: saved[idx].lines, date: saved[idx].date };
+      lsSet('saved_content', saved);
+      pendingOriginalTitle = trimmed;
+      buildHomeGrids();
+      return;
+    }
+  }
+
+  // 暫時內容（還沒儲存的貼入文字 / AI 搜尋）：保留原本流程，按儲存才寫入
+  markEdited();
+}
+
+// Restore ctx menu items for line editing
+
+function showLineMenu(i, el) {
+  if (navigator.vibrate) navigator.vibrate(30);
+
+  // Restore all items
+  document.getElementById('ctxEdit').style.display = '';
+  document.getElementById('ctxInsert').style.display = '';
+  document.getElementById('ctxDelete').style.display = '';
+  document.getElementById('ctxEdit').innerHTML = '<span>編輯這句</span><span class="mi ctx-icon" style="font-size:18px">edit</span>';
+  document.getElementById('ctxInsert').innerHTML = '<span>在前面插入一句</span><span class="mi ctx-icon" style="font-size:18px">add</span>';
+  document.getElementById('ctxDelete').innerHTML = '<span>刪除</span><span class="mi ctx-icon" style="font-size:18px">delete</span>';
+
+  const rect = el.getBoundingClientRect();
+  const menuW = 220, menuH = 150;
+  let x = rect.left + 16;
+  let y = rect.bottom + 6;
+  if (x + menuW > window.innerWidth - 8) x = window.innerWidth - menuW - 8;
+  if (y + menuH > window.innerHeight - 8) y = rect.top - menuH - 6;
+  ctxMenu.style.left = x + 'px';
+  ctxMenu.style.top = y + 'px';
+
+  document.getElementById('ctxEdit').onclick = () => { hideCtx(); editLine(i); };
+  document.getElementById('ctxInsert').onclick = () => { hideCtx(); insertLine(i); };
+  document.getElementById('ctxDelete').onclick = () => { hideCtx(); deleteLine(i); };
+
+  ctxOverlay.classList.add('show');
+  ctxMenu.classList.add('show');
+}
+
+function hideCtx() {
+  ctxMenu.classList.remove('show');
+  ctxOverlay.classList.remove('show');
+}
+
+async function editLine(i) {
+  const line = currentLines[i];
+  const currentZh = line.zh || line.words?.map(w => w.k).join('') || '';
+
+  const input = prompt('用中文輸入新的句子內容：\nAI 會自動生成對應的日文', currentZh);
+  if (input === null || !input.trim()) return;
+
+  showProc('AI 生成日文中…');
+  try {
+    const data = await callClaude(`請將以下中文翻譯成自然的日文，並拆解成單字格式。
+中文：${input.trim()}
+說話者：${line.speaker || ''}
+
+僅回傳 JSON（不加 markdown）：
+{"jp":"完整日文句子","zh":"${input.trim()}","words":[{"k":"日文","r":"讀音","ro":"羅馬拼音","zh":"中文意思","pos":"詞性"}]}`, 800);
+
+    currentLines[i] = {
+      ...line,
+      words: data.words || [{ k: data.jp, r: '', ro: '', zh: input.trim() }],
+      zh: data.zh || input.trim()
+    };
+    markEdited();
+    buildReader();
+  } catch(e) {
+    alert('生成失敗：' + e.message);
+  }
+  hideProc();
+}
+
+async function insertLine(i) {
+  const input = prompt('用中文輸入要插入的句子：\nAI 會自動生成對應的日文', '');
+  if (!input || !input.trim()) return;
+
+  const speaker = currentLines[i]?.speaker || '';
+  showProc('AI 生成日文中…');
+  try {
+    const data = await callClaude(`請將以下中文翻譯成自然的日文，並拆解成單字格式。
+中文：${input.trim()}
+說話者：${speaker}
+
+僅回傳 JSON（不加 markdown）：
+{"jp":"完整日文句子","zh":"${input.trim()}","words":[{"k":"日文","r":"讀音","ro":"羅馬拼音","zh":"中文意思","pos":"詞性"}]}`, 800);
+
+    const newLine = {
+      words: data.words || [{ k: data.jp, r: '', ro: '', zh: input.trim() }],
+      zh: data.zh || input.trim(),
+      speaker
+    };
+    currentLines = [...currentLines.slice(0, i), newLine, ...currentLines.slice(i)];
+    markEdited();
+    buildReader();
+  } catch(e) {
+    alert('生成失敗：' + e.message);
+  }
+  hideProc();
+}
+
+function deleteLine(i) {
+  if (!confirm('確定刪除這一句？')) return;
+  currentLines = currentLines.filter((_, idx) => idx !== i);
+  markEdited();
+  buildReader();
+}
+
+function markEdited() {
+  // Show save button whenever content is edited
+  document.getElementById('saveBtn').style.display = '';
+  isTempContent = true;
+  pendingLines = currentLines;
+}
+
+// ══ BUBBLE ══════════════════════════════════════════════════
+const bubble = document.getElementById('bubble');
+function showBubble(word, wu) {
+  activeWord = word;
+  document.getElementById('bWord').textContent = word.k;
+  document.getElementById('bMeaning').textContent = word.zh || '';
+  document.getElementById('bPos').textContent = word.pos || '';
+  unlockAudioCtxSync(); // 在 click 中立刻 unlock，之後 async fetch 完也能播
+  speakDirect(word.r || word.k);
+  const rect = wu.getBoundingClientRect();
+  const bw = 210;
+  let left = rect.left + rect.width/2 - bw/2;
+  left = Math.max(8, Math.min(left, window.innerWidth - bw - 8));
+  bubble.style.left = left + 'px';
+  bubble.style.top = (rect.top - 64) + 'px';
+  bubble.classList.add('show');
+}
+function hideBubble() { bubble.classList.remove('show'); activeWord = null; }
+document.addEventListener('click', e => { if (bubble.classList.contains('show') && !bubble.contains(e.target) && !e.target.closest('.wu')) hideBubble(); }, true);
+document.getElementById('bLookup').onclick = e => { e.stopPropagation(); if (activeWord) { openSheet(activeWord); hideBubble(); } };
+
+// ══ SHEET ══════════════════════════════════════════════════
+const overlay = document.getElementById('overlay');
+const sheet = document.getElementById('sheet');
+const shBody = document.getElementById('shBody');
+function openSheet(word) {
+  window._sheetWord = word;
+  document.getElementById('shWord').textContent = word.k;
+  document.getElementById('shSub').textContent = (word.r||'') + '　' + (word.ro||'');
+  document.getElementById('shSpeak').onclick = () => { unlockAudioCtxSync(); speakDirect(word.r || word.k); };
+  shBody.innerHTML = '<div class="loading"><div class="spinner"></div>AI 分析中…</div>';
+  overlay.classList.add('show'); sheet.classList.add('show');
+  fetchExplanation(word);
+}
+function closeSheet() { overlay.classList.remove('show'); sheet.classList.remove('show'); }
+
+// ══ BOTTOM SHEET DRAG-TO-CLOSE ══════════════════════════════
+function attachDragClose(sheetEl, closeFn) {
+  let startY = 0, deltaY = 0, dragging = false, baseTransform = '';
+  const THRESHOLD = 80; // px
+
+  function shouldStart(target) {
+    if (!target) return true;
+    if (target.closest('.sh-body')) return false; // 允許 body 內容捲動
+    return !target.closest('input, textarea, button, select, a, [contenteditable="true"]');
+  }
+  function begin(y, target) {
+    if (!shouldStart(target)) return;
+    startY = y;
+    deltaY = 0;
+    dragging = true;
+    baseTransform = sheetEl.style.transform || '';
+    sheetEl.style.transition = 'none';
+  }
+  function update(y) {
+    if (!dragging) return;
+    deltaY = Math.max(0, y - startY);
+    sheetEl.style.transform = `translateY(${deltaY}px)`;
+  }
+  function finish() {
+    if (!dragging) return;
+    dragging = false;
+    if (deltaY > THRESHOLD) {
+      sheetEl.style.transition = 'transform .25s ease-out';
+      sheetEl.style.transform = 'translateY(100%)';
+      setTimeout(() => {
+        sheetEl.style.transition = '';
+        sheetEl.style.transform = baseTransform;
+        closeFn();
+      }, 240);
+    } else {
+      sheetEl.style.transition = '';
+      sheetEl.style.transform = baseTransform;
+    }
+  }
+
+  sheetEl.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    begin(e.touches[0].clientY, e.target);
+  }, { passive: true });
+  sheetEl.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    e.preventDefault(); // 阻止瀏覽器 pull-to-refresh / scroll
+    update(e.touches[0].clientY);
+  }, { passive: false });
+  sheetEl.addEventListener('touchend', finish);
+  sheetEl.addEventListener('touchcancel', finish);
+
+  // 桌面測試用：滑鼠拖曳
+  sheetEl.addEventListener('mousedown', e => {
+    begin(e.clientY, e.target);
+    if (!dragging) return;
+    const onMove = ev => update(ev.clientY);
+    const onUp = () => {
+      finish();
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+}
+
+// 啟動所有 sheet 的拖曳關閉
+(function initSheetDrag() {
+  const targets = [
+    ['sheet', closeSheet],
+    ['addSheet', () => hideAddSheet()],
+    ['diffSheet', () => hideDiffSettings()],
+    ['aiSearchDlg', () => hideAiSearchDlg()],
+    ['newScDlg', () => hideNewScDlg()],
+  ];
+  targets.forEach(([id, fn]) => {
+    const el = document.getElementById(id);
+    if (el) attachDragClose(el, fn);
+  });
+})();
+
+// ══ SPEECH ══════════════════════════════════════════════════
+async function speakDirect(text) {
+  window.speechSynthesis.cancel();
+  if (getELKey()) {
+    // 注意：此函式應從 click handler 呼叫（showBubble/openSheet），
+    // 確保 AudioContext 已在 user gesture 中 unlock
+    const ok = await speakEL(text);
+    if (ok) return;
+  }
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = rate; window.speechSynthesis.speak(u);
+}
+async function speakLine(i, el) {
+  stopPlay();
+  const line = currentLines[i]; if (!line || line.d) return;
+  document.querySelectorAll('.line.playing, .line.loading-audio').forEach(e => {
+    e.classList.remove('playing'); e.classList.remove('loading-audio');
+  });
+  el.scrollIntoView({ behavior:'smooth', block:'center' });
+  window.speechSynthesis.cancel();
+  const text = (line.words||[]).map(w=>w.k).join('');
+  if (getELKey()) {
+    unlockAudioCtxSync(); // 在 user gesture 中立刻 unlock
+    el.classList.add('loading-audio'); // 顯示載入中
+    const blob = await fetchELAudio(text);
+    el.classList.remove('loading-audio');
+    if (blob) {
+      el.classList.add('playing');
+      await playBlobWithCtx(blob);
+      el.classList.remove('playing');
+      return;
+    }
+  }
+  el.classList.add('playing');
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = rate; u.onend = () => el.classList.remove('playing');
+  window.speechSynthesis.speak(u);
+}
+
+// ══ PLAY ALL ════════════════════════════════════════════════
+function togglePlay() { isPlaying ? stopPlay() : startPlay(); }
+function startPlay() {
+  isPlaying = true; stopFlag = false;
+  unlockAudioCtxSync(); // 在 user gesture 中立刻 unlock，之後 async fetch 完也能播
+  document.getElementById('playIcon').innerHTML = '<span class="mi" style="font-size:20px">stop</span>';
+  document.getElementById('playLabel').textContent = '停止';
+  document.getElementById('playBtn').classList.add('stop');
+  playSeq(0);
+}
+function stopPlay() {
+  isPlaying = false; stopFlag = true;
+  window.speechSynthesis.cancel();
+  stopCurrentEL(); // 停止 AudioContext source 與 fallback elAudio
+  document.querySelectorAll('.line.playing, .line.loading-audio').forEach(e => {
+    e.classList.remove('playing'); e.classList.remove('loading-audio');
+  });
+  document.getElementById('playIcon').innerHTML = '<span class="mi" style="font-size:20px">play_arrow</span>';
+  document.getElementById('playLabel').textContent = '全部朗讀';
+  document.getElementById('playBtn').classList.remove('stop');
+  document.getElementById('playCount').textContent = '';
+}
+async function playSeq(i) {
+  if (stopFlag || i >= currentLines.length) { stopPlay(); return; }
+  const line = currentLines[i];
+  if (!line || line.d) { if (!stopFlag) playSeq(i+1); return; }
+  document.querySelectorAll('.line.playing, .line.loading-audio').forEach(e => {
+    e.classList.remove('playing'); e.classList.remove('loading-audio');
+  });
+  const el = lineEls[i];
+  if (el) { el.scrollIntoView({ behavior:'smooth', block:'center' }); }
+  const n = currentLines.slice(0,i+1).filter(l=>l&&!l.d).length;
+  const tot = currentLines.filter(l=>l&&!l.d).length;
+  document.getElementById('playCount').textContent = `${n} / ${tot}`;
+  const text = (line.words||[]).map(w=>w.k).join('');
+  if (getELKey()) {
+    if (el) el.classList.add('loading-audio'); // 載入中指示
+    const blob = await fetchELAudio(text);
+    if (stopFlag) { if (el) el.classList.remove('loading-audio'); return; }
+    if (el) { el.classList.remove('loading-audio'); el.classList.add('playing'); }
+    // 預載下一行（background，命中 cache 就不用等）
+    const nextIdx = currentLines.findIndex((l, j) => j > i && l && !l.d);
+    if (nextIdx >= 0) {
+      const nextTxt = (currentLines[nextIdx].words||[]).map(w=>w.k).join('');
+      fetchELAudio(nextTxt); // 不 await，純 background 預熱
+    }
+    if (blob) await playBlobWithCtx(blob);
+    if (el) el.classList.remove('playing');
+    if (!stopFlag) { await new Promise(r => setTimeout(r, 300)); playSeq(i+1); }
+    return;
+  }
+  if (el) el.classList.add('playing');
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = rate;
+  u.onend = () => { if (el) el.classList.remove('playing'); if (!stopFlag) setTimeout(() => playSeq(i+1), 420); };
+  window.speechSynthesis.speak(u);
+}
+
+// ══ CONTROLS ════════════════════════════════════════════════
+function tog(type) {
+  const c = document.getElementById('lyrics');
+  if (type==='ruby') { const on=document.getElementById('tRuby').classList.toggle('on'); c.classList.toggle('hide-ruby',!on); }
+  else if (type==='romaji') { const on=document.getElementById('tRomaji').classList.toggle('on'); c.classList.toggle('hide-romaji',!on); }
+  else if (type==='zh') { const on=document.getElementById('tZh').classList.toggle('on'); c.classList.toggle('hide-zh',!on); }
+  else if (type==='pos') { const on=document.getElementById('tPos').classList.toggle('on'); c.classList.toggle('hide-pos',!on); }
+}
+function chRate(d) { rate=Math.round(Math.max(0.3,Math.min(1.5,rate+d))*10)/10; document.getElementById('rateVal').textContent=rate.toFixed(1)+'×'; }
+
+function showAiSearchDlg() {
+  document.getElementById('aiSearchInput').value = '';
+  document.getElementById('aiSearchOverlay').style.display = 'block';
+  document.getElementById('aiSearchDlg').style.display = 'flex';
+  setTimeout(() => document.getElementById('aiSearchInput').focus(), 100);
+}
+function hideAiSearchDlg() {
+  document.getElementById('aiSearchOverlay').style.display = 'none';
+  document.getElementById('aiSearchDlg').style.display = 'none';
+}
+
+async function processAiSearchSheet() {
+  const q = document.getElementById('aiSearchInput').value.trim();
+  if (!q) { alert('請輸入搜尋關鍵字'); return; }
+  if (!getKey()) { promptForKey(); return; }
+  hideAiSearchDlg();
+  showProc('AI 搜尋中…');
+  try {
+    const lines = await aiSearch(q);
+    currentLines = lines;
+    isTempContent = true;
+    pendingTitle = q;
+    pendingLines = lines;
+    pendingSaveKey = '';
+    pendingOriginalTitle = '';
+    document.getElementById('readerTitle').textContent = q;
+    document.getElementById('saveBtn').style.display = '';
+    const genNewBtn = document.getElementById('genNewBtn');
+    if (genNewBtn) genNewBtn.style.display = 'none';
+    setupReaderBack(confirmDiscard);
+    buildReader(); hideProc(); showPage('pageReader');
+  } catch(e) { hideProc(); alert('搜尋失敗：' + e.message); }
+}
+
+function showAddSheet() {
+  document.getElementById('addSheetOverlay').style.opacity = '1';
+  document.getElementById('addSheetOverlay').style.pointerEvents = 'auto';
+  document.getElementById('addSheet').style.transform = 'translateY(0)';
+}
+function hideAddSheet() {
+  document.getElementById('addSheetOverlay').style.opacity = '0';
+  document.getElementById('addSheetOverlay').style.pointerEvents = 'none';
+  document.getElementById('addSheet').style.transform = 'translateY(100%)';
+}
+
+// ══ INIT ════════════════════════════════════════════════════
+buildHomeGrids();
+
+// ══ PRESET SCENARIO DATA ════════════════════════════════════
+const PRESET_SCENARIOS = {
+  '機場': {
+    '初級': [
+      { words: [{k:"すみません",r:"すみません",ro:"su mi ma sen",zh:"不好意思"},{k:"、",r:"、",ro:",",zh:""},{k:"チェックイン",r:"チェックイン",ro:"che k ku in",zh:"報到"},{k:"は",r:"は",ro:"wa",zh:"（主題）"},{k:"どこ",r:"どこ",ro:"do ko",zh:"哪裡"},{k:"です",r:"です",ro:"de su",zh:"是"},{k:"か",r:"か",ro:"ka",zh:"？"}], zh:"不好意思，報到在哪裡？", speaker:"旅客" },
+      { words: [{k:"あちら",r:"あちら",ro:"a chi ra",zh:"那邊"},{k:"です",r:"です",ro:"de su",zh:"是"},{k:"よ",r:"よ",ro:"yo",zh:"（語氣）"}], zh:"在那邊哦。", speaker:"工作人員" },
+      { words: [{k:"パスポート",r:"パスポート",ro:"pa su pō to",zh:"護照"},{k:"を",r:"を",ro:"o",zh:"（受詞）"},{k:"見せて",r:"みせて",ro:"mi se te",zh:"給我看"},{k:"ください",r:"ください",ro:"ku da sai",zh:"請"}], zh:"請出示護照。", speaker:"工作人員" },
+      { words: [{k:"はい",r:"はい",ro:"ha i",zh:"好的"},{k:"、",r:"、",ro:",",zh:""},{k:"どうぞ",r:"どうぞ",ro:"dō zo",zh:"請"}], zh:"好的，請。", speaker:"旅客" },
+      { words: [{k:"荷物",r:"にもつ",ro:"ni mo tsu",zh:"行李"},{k:"は",r:"は",ro:"wa",zh:"（主題）"},{k:"いくつ",r:"いくつ",ro:"i ku tsu",zh:"幾個"},{k:"です",r:"です",ro:"de su",zh:"是"},{k:"か",r:"か",ro:"ka",zh:"？"}], zh:"行李有幾件？", speaker:"工作人員" },
+      { words: [{k:"一つ",r:"ひとつ",ro:"hi to tsu",zh:"一個"},{k:"です",r:"です",ro:"de su",zh:"是"}], zh:"一件。", speaker:"旅客" },
+      { words: [{k:"搭乗口",r:"とうじょうぐち",ro:"tō jō gu chi",zh:"登機口"},{k:"は",r:"は",ro:"wa",zh:"（主題）"},{k:"B12",r:"B12",ro:"B jū ni",zh:"B12"},{k:"です",r:"です",ro:"de su",zh:"是"}], zh:"登機口是 B12。", speaker:"工作人員" },
+      { words: [{k:"何時",r:"なんじ",ro:"nan ji",zh:"幾點"},{k:"に",r:"に",ro:"ni",zh:"（時間）"},{k:"搭乗",r:"とうじょう",ro:"tō jō",zh:"登機"},{k:"です",r:"です",ro:"de su",zh:"是"},{k:"か",r:"か",ro:"ka",zh:"？"}], zh:"幾點登機？", speaker:"旅客" },
+      { words: [{k:"10時",r:"じゅうじ",ro:"jū ji",zh:"十點"},{k:"30分",r:"さんじっぷん",ro:"san jip pun",zh:"三十分"},{k:"です",r:"です",ro:"de su",zh:"是"}], zh:"十點三十分。", speaker:"工作人員" },
+      { words: [{k:"ありがとう",r:"ありがとう",ro:"a ri ga tō",zh:"謝謝"},{k:"ございます",r:"ございます",ro:"go za i ma su",zh:"（敬語）"}], zh:"非常感謝。", speaker:"旅客" },
+    ],
+    '中級': [
+      { words: [{k:"台湾",r:"たいわん",ro:"ta i wan",zh:"台灣"},{k:"行き",r:"ゆき",ro:"yu ki",zh:"前往"},{k:"の",r:"の",ro:"no",zh:"的"},{k:"フライト",r:"フライト",ro:"fu ra i to",zh:"航班"},{k:"を",r:"を",ro:"o",zh:"（受詞）"},{k:"チェックイン",r:"チェックイン",ro:"che k ku in",zh:"報到"},{k:"したい",r:"したい",ro:"shi ta i",zh:"想做"},{k:"のですが",r:"のですが",ro:"no de su ga",zh:"……"}], zh:"我想辦理前往台灣的航班報到手續。", speaker:"旅客" },
+      { words: [{k:"予約",r:"よやく",ro:"yo ya ku",zh:"預訂"},{k:"番号",r:"ばんごう",ro:"ban gō",zh:"編號"},{k:"を",r:"を",ro:"o",zh:"（受詞）"},{k:"教えて",r:"おしえて",ro:"o shi e te",zh:"告訴"},{k:"いただけます",r:"いただけます",ro:"i ta da ke ma su",zh:"能否"},{k:"か",r:"か",ro:"ka",zh:"？"}], zh:"請問能告訴我預訂編號嗎？", speaker:"工作人員" },
+      { words: [{k:"確認",r:"かくにん",ro:"ka ku nin",zh:"確認"},{k:"メール",r:"メール",ro:"mē ru",zh:"郵件"},{k:"に",r:"に",ro:"ni",zh:"（位置）"},{k:"書いて",r:"かいて",ro:"ka i te",zh:"寫著"},{k:"あります",r:"あります",ro:"a ri ma su",zh:"有"}], zh:"寫在確認郵件裡。", speaker:"旅客" },
+      { words: [{k:"お席",r:"おせき",ro:"o se ki",zh:"座位"},{k:"の",r:"の",ro:"no",zh:"的"},{k:"ご希望",r:"ごきぼう",ro:"go ki bō",zh:"需求"},{k:"は",r:"は",ro:"wa",zh:"（主題）"},{k:"ございます",r:"ございます",ro:"go za i ma su",zh:"有嗎"},{k:"か",r:"か",ro:"ka",zh:"？"}], zh:"關於座位有什麼偏好嗎？", speaker:"工作人員" },
+      { words: [{k:"窓側",r:"まどがわ",ro:"ma do ga wa",zh:"靠窗"},{k:"を",r:"を",ro:"o",zh:"（受詞）"},{k:"お願い",r:"おねがい",ro:"o ne ga i",zh:"拜託"},{k:"できます",r:"できます",ro:"de ki ma su",zh:"可以"},{k:"か",r:"か",ro:"ka",zh:"？"}], zh:"可以給我靠窗的座位嗎？", speaker:"旅客" },
+      { words: [{k:"手荷物",r:"てにもつ",ro:"te ni mo tsu",zh:"手提行李"},{k:"は",r:"は",ro:"wa",zh:"（主題）"},{k:"7キロ",r:"ななキロ",ro:"na na ki ro",zh:"七公斤"},{k:"まで",r:"まで",ro:"ma de",zh:"到"},{k:"お持ち込み",r:"おもちこみ",ro:"o mo chi ko mi",zh:"可帶入"},{k:"いただけます",r:"いただけます",ro:"i ta da ke ma su",zh:""}], zh:"手提行李可攜帶至七公斤。", speaker:"工作人員" },
+      { words: [{k:"保安検査",r:"ほあんけんさ",ro:"ho an ken sa",zh:"安全檢查"},{k:"は",r:"は",ro:"wa",zh:"（主題）"},{k:"どちら",r:"どちら",ro:"do chi ra",zh:"哪邊"},{k:"に",r:"に",ro:"ni",zh:"（方向）"},{k:"ありますか",r:"ありますか",ro:"a ri ma su ka",zh:"有？"}], zh:"安全檢查在哪邊？", speaker:"旅客" },
+      { words: [{k:"エスカレーター",r:"エスカレーター",ro:"e su ka rē tā",zh:"手扶梯"},{k:"を",r:"を",ro:"o",zh:"（受詞）"},{k:"上がって",r:"あがって",ro:"a ga tte",zh:"上去"},{k:"左手",r:"ひだりて",ro:"hi da ri te",zh:"左手邊"},{k:"に",r:"に",ro:"ni",zh:"（方向）"},{k:"あります",r:"あります",ro:"a ri ma su",zh:"有"}], zh:"搭手扶梯上去，在左手邊。", speaker:"工作人員" },
+    ],
+    '進階': [
+      { words: [{k:"本日",r:"ほんじつ",ro:"hon ji tsu",zh:"今日"},{k:"の",r:"の",ro:"no",zh:"的"},{k:"搭乗便",r:"とうじょうびん",ro:"tō jō bin",zh:"搭乘航班"},{k:"に",r:"に",ro:"ni",zh:"（對象）"},{k:"遅延",r:"ちえん",ro:"chi en",zh:"延誤"},{k:"が",r:"が",ro:"ga",zh:"（主語）"},{k:"生じて",r:"しょうじて",ro:"shō ji te",zh:"發生"},{k:"おります",r:"おります",ro:"o ri ma su",zh:""}], zh:"今日的搭乘航班出現了延誤。", speaker:"工作人員" },
+      { words: [{k:"どの",r:"どの",ro:"do no",zh:"哪個"},{k:"くらい",r:"くらい",ro:"ku ra i",zh:"程度"},{k:"の",r:"の",ro:"no",zh:"的"},{k:"遅延",r:"ちえん",ro:"chi en",zh:"延誤"},{k:"が",r:"が",ro:"ga",zh:"（主語）"},{k:"見込まれて",r:"みこまれて",ro:"mi ko ma re te",zh:"預計"},{k:"いますか",r:"いますか",ro:"i ma su ka",zh:"？"}], zh:"預計延誤多久？", speaker:"旅客" },
+      { words: [{k:"現時点",r:"げんじてん",ro:"gen ji ten",zh:"目前"},{k:"では",r:"では",ro:"de wa",zh:"來說"},{k:"約",r:"やく",ro:"ya ku",zh:"約"},{k:"2時間",r:"にじかん",ro:"ni ji kan",zh:"兩小時"},{k:"の",r:"の",ro:"no",zh:"的"},{k:"遅延",r:"ちえん",ro:"chi en",zh:"延誤"},{k:"が",r:"が",ro:"ga",zh:"（主語）"},{k:"予想されます",r:"よそうされます",ro:"yo sō sa re ma su",zh:"預計"}], zh:"目前預計約延誤兩小時。", speaker:"工作人員" },
+      { words: [{k:"接続便",r:"せつぞくびん",ro:"se tsu zo ku bin",zh:"轉接航班"},{k:"に",r:"に",ro:"ni",zh:"（對象）"},{k:"間に合わない",r:"まにあわない",ro:"ma ni a wa na i",zh:"趕不上"},{k:"場合",r:"ばあい",ro:"ba a i",zh:"情況"},{k:"の",r:"の",ro:"no",zh:"的"},{k:"対応",r:"たいおう",ro:"ta i ō",zh:"應對"},{k:"は",r:"は",ro:"wa",zh:"（主題）"},{k:"いかがでしょうか",r:"いかがでしょうか",ro:"i ka ga de shō ka",zh:"如何呢？"}], zh:"若趕不上轉接航班，該如何處理？", speaker:"旅客" },
+      { words: [{k:"乗継便",r:"のりつぎびん",ro:"no ri tsu gi bin",zh:"轉機航班"},{k:"の",r:"の",ro:"no",zh:"的"},{k:"再手配",r:"さいてはい",ro:"sa i te ha i",zh:"重新安排"},{k:"を",r:"を",ro:"o",zh:"（受詞）"},{k:"無償",r:"むしょう",ro:"mu shō",zh:"免費"},{k:"で",r:"で",ro:"de",zh:"以"},{k:"承ります",r:"うけたまわります",ro:"u ke ta ma wa ri ma su",zh:"辦理"}], zh:"將免費為您重新安排轉機航班。", speaker:"工作人員" },
+      { words: [{k:"お手数",r:"おてすう",ro:"o te su",zh:"麻煩"},{k:"をおかけして",r:"をおかけして",ro:"o ka ke shi te",zh:"造成"},{k:"誠に",r:"まことに",ro:"ma ko to ni",zh:"誠心"},{k:"申し訳",r:"もうしわけ",ro:"mō shi wa ke",zh:"抱歉"},{k:"ございません",r:"ございません",ro:"go za i ma sen",zh:"（敬語）"}], zh:"造成您的不便，深感抱歉。", speaker:"工作人員" },
+      { words: [{k:"ラウンジ",r:"ラウンジ",ro:"ra un ji",zh:"貴賓室"},{k:"の",r:"の",ro:"no",zh:"的"},{k:"ご利用",r:"ごりよう",ro:"go ri yō",zh:"使用"},{k:"券",r:"けん",ro:"ken",zh:"券"},{k:"を",r:"を",ro:"o",zh:"（受詞）"},{k:"お渡し",r:"おわたし",ro:"o wa ta shi",zh:"奉上"},{k:"いたします",r:"いたします",ro:"i ta shi ma su",zh:""}], zh:"將為您奉上貴賓室使用券。", speaker:"工作人員" },
+    ],
+  },
+  '餐廳': {
+    '初級': [
+      { words: [{k:"いらっしゃいませ",r:"いらっしゃいませ",ro:"i ra s sha i ma se",zh:"歡迎光臨"}], zh:"歡迎光臨。", speaker:"店員" },
+      { words: [{k:"何名様",r:"なんめいさま",ro:"nan mei sa ma",zh:"幾位"},{k:"です",r:"です",ro:"de su",zh:"是"},{k:"か",r:"か",ro:"ka",zh:"？"}], zh:"請問幾位？", speaker:"店員" },
+      { words: [{k:"二人",r:"ふたり",ro:"fu ta ri",zh:"兩個人"},{k:"です",r:"です",ro:"de su",zh:"是"}], zh:"兩個人。", speaker:"客人" },
+      { words: [{k:"メニュー",r:"メニュー",ro:"me nyū",zh:"菜單"},{k:"を",r:"を",ro:"o",zh:"（受詞）"},{k:"ください",r:"ください",ro:"ku da sai",zh:"請給我"}], zh:"請給我菜單。", speaker:"客人" },
+      { words: [{k:"はい",r:"はい",ro:"ha i",zh:"好的"},{k:"、",r:"、",ro:",",zh:""},{k:"どうぞ",r:"どうぞ",ro:"dō zo",zh:"請"}], zh:"好的，請。", speaker:"店員" },
+      { words: [{k:"これ",r:"これ",ro:"ko re",zh:"這個"},{k:"を",r:"を",ro:"o",zh:"（受詞）"},{k:"ください",r:"ください",ro:"ku da sai",zh:"請給我"}], zh:"請給我這個。", speaker:"客人" },
+      { words: [{k:"お飲み物",r:"おのみもの",ro:"o no mi mo no",zh:"飲料"},{k:"は",r:"は",ro:"wa",zh:"（主題）"},{k:"いかが",r:"いかが",ro:"i ka ga",zh:"如何"},{k:"です",r:"です",ro:"de su",zh:"是"},{k:"か",r:"か",ro:"ka",zh:"？"}], zh:"飲料要什麼嗎？", speaker:"店員" },
+      { words: [{k:"水",r:"みず",ro:"mi zu",zh:"水"},{k:"を",r:"を",ro:"o",zh:"（受詞）"},{k:"ください",r:"ください",ro:"ku da sai",zh:"請給我"}], zh:"請給我水。", speaker:"客人" },
+      { words: [{k:"お会計",r:"おかいけい",ro:"o ka i ke i",zh:"結帳"},{k:"を",r:"を",ro:"o",zh:"（受詞）"},{k:"お願い",r:"おねがい",ro:"o ne ga i",zh:"拜託"},{k:"します",r:"します",ro:"shi ma su",zh:""}], zh:"請幫我結帳。", speaker:"客人" },
+      { words: [{k:"合計",r:"ごうけい",ro:"gō ke i",zh:"合計"},{k:"1200円",r:"せんにひゃくえん",ro:"sen ni hyaku en",zh:"一千兩百日圓"},{k:"です",r:"です",ro:"de su",zh:"是"}], zh:"合計 1200 日圓。", speaker:"店員" },
+    ],
+    '中級': [
+      { words: [{k:"予約",r:"よやく",ro:"yo ya ku",zh:"預約"},{k:"して",r:"して",ro:"shi te",zh:"已"},{k:"いる",r:"いる",ro:"i ru",zh:"做了"},{k:"のですが",r:"のですが",ro:"no de su ga",zh:"……"},{k:"田中",r:"たなか",ro:"ta na ka",zh:"田中"},{k:"と",r:"と",ro:"to",zh:"（引用）"},{k:"申します",r:"もうします",ro:"mō shi ma su",zh:"我叫"}], zh:"我有預約，我叫田中。", speaker:"客人" },
+      { words: [{k:"お待ち",r:"おまち",ro:"o ma chi",zh:"等候"},{k:"して",r:"して",ro:"shi te",zh:"（動作）"},{k:"おりました",r:"おりました",ro:"o ri ma shi ta",zh:"在等"},{k:"ご案内",r:"ごあんない",ro:"go an na i",zh:"引導"},{k:"いたします",r:"いたします",ro:"i ta shi ma su",zh:""}], zh:"一直在等您，我來帶位。", speaker:"店員" },
+      { words: [{k:"本日",r:"ほんじつ",ro:"hon ji tsu",zh:"今日"},{k:"の",r:"の",ro:"no",zh:"的"},{k:"おすすめ",r:"おすすめ",ro:"o su su me",zh:"推薦"},{k:"は",r:"は",ro:"wa",zh:"（主題）"},{k:"何",r:"なに",ro:"na ni",zh:"什麼"},{k:"です",r:"です",ro:"de su",zh:"是"},{k:"か",r:"か",ro:"ka",zh:"？"}], zh:"今天的推薦是什麼？", speaker:"客人" },
+      { words: [{k:"本日",r:"ほんじつ",ro:"hon ji tsu",zh:"今日"},{k:"は",r:"は",ro:"wa",zh:"（主題）"},{k:"鮮魚",r:"せんぎょ",ro:"sen gyo",zh:"鮮魚"},{k:"の",r:"の",ro:"no",zh:"的"},{k:"カルパッチョ",r:"カルパッチョ",ro:"ka ru pa c cho",zh:"生魚薄片"},{k:"が",r:"が",ro:"ga",zh:"（主語）"},{k:"おすすめ",r:"おすすめ",ro:"o su su me",zh:"推薦"},{k:"です",r:"です",ro:"de su",zh:"是"}], zh:"今天推薦鮮魚薄片。", speaker:"店員" },
+      { words: [{k:"アレルギー",r:"アレルギー",ro:"a re ru gī",zh:"過敏"},{k:"が",r:"が",ro:"ga",zh:"（主語）"},{k:"ある",r:"ある",ro:"a ru",zh:"有"},{k:"のですが",r:"のですが",ro:"no de su ga",zh:"……"},{k:"卵",r:"たまご",ro:"ta ma go",zh:"雞蛋"},{k:"は",r:"は",ro:"wa",zh:"（主題）"},{k:"入って",r:"はいって",ro:"ha i tte",zh:"放入"},{k:"いますか",r:"いますか",ro:"i ma su ka",zh:"？"}], zh:"我有過敏，請問有放雞蛋嗎？", speaker:"客人" },
+      { words: [{k:"確認",r:"かくにん",ro:"ka ku nin",zh:"確認"},{k:"して",r:"して",ro:"shi te",zh:"（動作）"},{k:"参ります",r:"まいります",ro:"ma i ri ma su",zh:"來"}], zh:"我去確認一下。", speaker:"店員" },
+      { words: [{k:"ドリンク",r:"ドリンク",ro:"do rin ku",zh:"飲料"},{k:"は",r:"は",ro:"wa",zh:"（主題）"},{k:"ソフトドリンク",r:"ソフトドリンク",ro:"so fu to do rin ku",zh:"軟飲料"},{k:"飲み放題",r:"のみほうだい",zh:"無限暢飲",ro:"no mi hō dai"},{k:"に",r:"に",ro:"ni",zh:"（選擇）"},{k:"なって",r:"なって",ro:"na tte",zh:"變為"},{k:"おります",r:"おります",ro:"o ri ma su",zh:""}], zh:"飲料部分提供軟飲料無限暢飲。", speaker:"店員" },
+      { words: [{k:"お会計",r:"おかいけい",ro:"o ka i ke i",zh:"結帳"},{k:"は",r:"は",ro:"wa",zh:"（主題）"},{k:"別々",r:"べつべつ",ro:"be tsu be tsu",zh:"分開"},{k:"に",r:"に",ro:"ni",zh:"（方式）"},{k:"お願い",r:"おねがい",ro:"o ne ga i",zh:"拜託"},{k:"できます",r:"できます",ro:"de ki ma su",zh:"可以"},{k:"か",r:"か",ro:"ka",zh:"？"}], zh:"可以分開結帳嗎？", speaker:"客人" },
+    ],
+    '進階': [
+      { words: [{k:"本日",r:"ほんじつ",ro:"hon ji tsu",zh:"今日"},{k:"は",r:"は",ro:"wa",zh:"（主題）"},{k:"おまかせ",r:"おまかせ",ro:"o ma ka se",zh:"主廚推薦"},{k:"コース",r:"コース",ro:"kō su",zh:"套餐"},{k:"を",r:"を",ro:"o",zh:"（受詞）"},{k:"お願い",r:"おねがい",ro:"o ne ga i",zh:"拜託"},{k:"したい",r:"したい",ro:"shi ta i",zh:"想做"},{k:"のですが",r:"のですが",ro:"no de su ga",zh:"……"}], zh:"今天想點主廚推薦套餐。", speaker:"客人" },
+      { words: [{k:"かしこまりました",r:"かしこまりました",ro:"ka shi ko ma ri ma shi ta",zh:"好的（敬）"},{k:"ご予算",r:"ごよさん",ro:"go yo san",zh:"預算"},{k:"は",r:"は",ro:"wa",zh:"（主題）"},{k:"いかほど",r:"いかほど",ro:"i ka ho do",zh:"多少"},{k:"で",r:"で",ro:"de",zh:"以"},{k:"しょうか",r:"しょうか",ro:"shō ka",zh:"呢？"}], zh:"好的，請問預算大概是多少？", speaker:"店員" },
+      { words: [{k:"一人",r:"ひとり",ro:"hi to ri",zh:"每人"},{k:"1万円",r:"いちまんえん",ro:"i chi man en",zh:"一萬日圓"},{k:"程度",r:"ていど",ro:"te i do",zh:"左右"},{k:"で",r:"で",ro:"de",zh:"以"},{k:"考えて",r:"かんがえて",ro:"kan ga e te",zh:"考慮"},{k:"おります",r:"おります",ro:"o ri ma su",zh:""}], zh:"每人大約一萬日圓左右。", speaker:"客人" },
+      { words: [{k:"それでしたら",r:"それでしたら",ro:"so re de shi ta ra",zh:"那樣的話"},{k:"黒毛和牛",r:"くろげわぎゅう",ro:"ku ro ge wa gyū",zh:"黑毛和牛"},{k:"を",r:"を",ro:"o",zh:"（受詞）"},{k:"メインに",r:"メインに",ro:"me in ni",zh:"作為主菜"},{k:"した",r:"した",ro:"shi ta",zh:"以"},{k:"8品",r:"はっぴん",ro:"hap pin",zh:"八道菜"},{k:"の",r:"の",ro:"no",zh:"的"},{k:"コース",r:"コース",ro:"kō su",zh:"套餐"},{k:"が",r:"が",ro:"ga",zh:"（主語）"},{k:"ございます",r:"ございます",ro:"go za i ma su",zh:"有"}], zh:"那麼，有以黑毛和牛為主菜的八道菜套餐。", speaker:"店員" },
+      { words: [{k:"ワイン",r:"ワイン",ro:"wa in",zh:"葡萄酒"},{k:"の",r:"の",ro:"no",zh:"的"},{k:"ペアリング",r:"ペアリング",ro:"pe a rin gu",zh:"搭配"},{k:"は",r:"は",ro:"wa",zh:"（主題）"},{k:"別途",r:"べっと",ro:"bet to",zh:"另外"},{k:"ご用意",r:"ごようい",ro:"go yō i",zh:"準備"},{k:"できます",r:"できます",ro:"de ki ma su",zh:"可以"},{k:"か",r:"か",ro:"ka",zh:"？"}], zh:"可以另外搭配葡萄酒嗎？", speaker:"客人" },
+      { words: [{k:"ソムリエ",r:"ソムリエ",ro:"so mu ri e",zh:"侍酒師"},{k:"が",r:"が",ro:"ga",zh:"（主語）"},{k:"各料理",r:"かくりょうり",ro:"ka ku ryō ri",zh:"每道菜"},{k:"に",r:"に",ro:"ni",zh:"（搭配）"},{k:"合わせた",r:"あわせた",ro:"a wa se ta",zh:"搭配"},{k:"ワイン",r:"ワイン",ro:"wa in",zh:"葡萄酒"},{k:"を",r:"を",ro:"o",zh:"（受詞）"},{k:"セレクト",r:"セレクト",ro:"se re ku to",zh:"挑選"},{k:"いたします",r:"いたします",ro:"i ta shi ma su",zh:""}], zh:"由侍酒師為每道菜挑選搭配的葡萄酒。", speaker:"店員" },
+      { words: [{k:"食後",r:"しょくご",ro:"sho ku go",zh:"餐後"},{k:"に",r:"に",ro:"ni",zh:"（時間）"},{k:"デザート",r:"デザート",ro:"de zā to",zh:"甜點"},{k:"と",r:"と",ro:"to",zh:"和"},{k:"お茶",r:"おちゃ",ro:"o cha",zh:"茶"},{k:"を",r:"を",ro:"o",zh:"（受詞）"},{k:"お出し",r:"おだし",ro:"o da shi",zh:"奉上"},{k:"いたします",r:"いたします",ro:"i ta shi ma su",zh:""}], zh:"餐後將為您奉上甜點和茶。", speaker:"店員" },
+    ],
+  },
+};
+
+const _unused = [ // removed
+  { words: [{k:"唸るぜ",r:"なるぜ",ro:"Naru ze",zh:"咆哮"}], zh:"我要咆哮" },
+  { words: [{k:"血泥",r:"ちどろ",ro:"chi doro",zh:"血泥"},{k:"ついたって",r:"ついたって",ro:"tsui ta tte",zh:"就算沾了"},{k:"守りたい",r:"まもりたい",ro:"ma mo ri tai",zh:"想守護"}], zh:"就算沾滿血泥也想守護" },
+  { words: [{k:"革命",r:"かくめい",ro:"ka ku mei",zh:"革命"},{k:"道中",r:"どうちゅう",ro:"dō chū",zh:"途中"},{k:"だって",r:"だって",ro:"datte",zh:"就算"},{k:"君に",r:"きみに",ro:"ki mi ni",zh:"為你"},{k:"夢中",r:"むちゅう",ro:"mu chū",zh:"著迷"}], zh:"就算在革命途中，也為你著迷" },
+  { words: [{k:"暗闇",r:"くらやみ",ro:"ku ra ya mi",zh:"黑暗"},{k:"染み込む",r:"しみこむ",ro:"shi mi ko mu",zh:"滲透"},{k:"世界で",r:"せかいで",ro:"se kai de",zh:"世界裡"},{k:"見つけた",r:"みつけた",ro:"mi tsu ke ta",zh:"找到的"}], zh:"在被黑暗滲透的世界裡找到的" },
+  { words: [{k:"センチメンタルな",r:"センチメンタルな",ro:"Sen chi men ta ru na",zh:"多愁善感的"},{k:"恋",r:"こい",ro:"koi",zh:"愛情"}], zh:"多愁善感的愛情" },
+  {d:1},
+  { words: [{k:"甘く",r:"あまく",ro:"a ma ku",zh:"甜蜜地"},{k:"ぬかるんだ",r:"ぬかるんだ",ro:"nu ka run da",zh:"黏膩的"},{k:"眼差し",r:"まなざし",ro:"ma na za shi",zh:"眼神"}], zh:"那甜蜜又黏膩的眼神" },
+  { words: [{k:"変に",r:"へんに",ro:"he n ni",zh:"莫名地"},{k:"色気",r:"いろけ",ro:"i ro ke",zh:"魅力"},{k:"あるから",r:"あるから",ro:"a ru ka ra",zh:"因為有"},{k:"困った",r:"こまった",ro:"ko ma tta",zh:"真困擾"}], zh:"莫名地帶有魅力，真讓人困擾" },
+  { words: [{k:"手を",r:"てを",ro:"te o",zh:"手"},{k:"繋ぐ",r:"つなぐ",ro:"tsu na gu",zh:"牽起"},{k:"勇気",r:"ゆうき",ro:"yū ki",zh:"勇氣"},{k:"出したくて",r:"だしたくて",ro:"da shi ta ku te",zh:"想鼓起"}], zh:"想要鼓起勇氣牽起你的手" },
+  { words: [{k:"身の程",r:"みのほど",ro:"mi no ho do",zh:"自身處境"},{k:"わきまえて",r:"わきまえて",ro:"wa ki ma e te",zh:"顧及"},{k:"ちゃ",r:"ちゃ",ro:"cha",zh:"得"},{k:"出来ないね",r:"できないね",ro:"de ki nai ne",zh:"做不到呢"}], zh:"卻無法顧及自身處境" },
+  {d:1},
+  { words: [{k:"暗い",r:"くらい",ro:"ku ra i",zh:"黑暗的"},{k:"トンネルの",r:"トンネルの",ro:"ton ne ru no",zh:"隧道的"},{k:"壁",r:"かべ",ro:"ka be",zh:"牆壁"}], zh:"黑暗隧道的牆壁" },
+  { words: [{k:"したたり",r:"したたり",ro:"shi ta ta ri",zh:"滴落"},{k:"落ちる",r:"おちる",ro:"o chi ru",zh:"下來"},{k:"秘密",r:"ひみつ",ro:"hi mi tsu",zh:"秘密"}], zh:"滴落下來的秘密" },
+  { words: [{k:"しめやかに",r:"しめやかに",ro:"shi me ya ka ni",zh:"悄然地"},{k:"高鳴る",r:"たかなる",ro:"ta ka na ru",zh:"劇烈跳動"},{k:"心",r:"こころ",ro:"ko ko ro",zh:"心臟"}], zh:"心臟悄然劇烈跳動" },
+  {d:1},
+  { words: [{k:"ダメダメ",r:"ダメダメ",ro:"Da me da me",zh:"不行不行"}], zh:"不行不行" },
+  { words: [{k:"待て待て",r:"まてまて",ro:"Ma te ma te",zh:"等等等等"}], zh:"等等等等" },
+  { words: [{k:"呪いも",r:"のろいも",ro:"no ro i mo",zh:"詛咒"},{k:"病も",r:"やまいも",ro:"ya ma i mo",zh:"病痛"},{k:"抱きしめたい",r:"だきしめたい",ro:"da ki shi me tai",zh:"想擁抱"}], zh:"想擁抱詛咒與病痛" },
+  { words: [{k:"ここらで",r:"ここらで",ro:"ko ko ra de",zh:"在這裡"},{k:"暴れちゃっても",r:"あばれちゃっても",ro:"a ba re cha tte mo",zh:"就算放縱"},{k:"いいかな",r:"いいかな",ro:"ii ka na",zh:"無妨吧"}], zh:"在這裡放縱一下也無妨吧" },
+  {d:1},
+  { words: [{k:"あぁ",r:"あぁ",ro:"Aa",zh:"啊"},{k:"唸るぜ",r:"なるぜ",ro:"na ru ze",zh:"要咆哮"}], zh:"啊，我要咆哮" },
+  { words: [{k:"血泥",r:"ちどろ",ro:"chi doro",zh:"血泥"},{k:"ついたって",r:"ついたって",ro:"tsui ta tte",zh:"就算沾了"},{k:"守りたい",r:"まもりたい",ro:"ma mo ri tai",zh:"想守護"}], zh:"就算沾滿血泥也想守護" },
+  { words: [{k:"革命",r:"かくめい",ro:"ka ku mei",zh:"革命"},{k:"道中",r:"どうちゅう",ro:"dō chū",zh:"途中"},{k:"だって",r:"だって",ro:"datte",zh:"就算"},{k:"君に",r:"きみに",ro:"ki mi ni",zh:"為你"},{k:"夢中",r:"むちゅう",ro:"mu chū",zh:"著迷"}], zh:"就算在革命途中，也為你著迷" },
+  { words: [{k:"暗闇",r:"くらやみ",ro:"ku ra ya mi",zh:"黑暗"},{k:"染み込む",r:"しみこむ",ro:"shi mi ko mu",zh:"滲透"},{k:"世界で",r:"せかいで",ro:"se kai de",zh:"世界裡"},{k:"見つけた",r:"みつけた",ro:"mi tsu ke ta",zh:"找到的"}], zh:"在被黑暗滲透的世界裡找到的" },
+  { words: [{k:"センチメンタルな",r:"センチメンタルな",ro:"Sen chi men ta ru na",zh:"多愁善感的"},{k:"恋",r:"こい",ro:"koi",zh:"愛情"}], zh:"多愁善感的愛情" },
+  {d:1},
+  { words: [{k:"なりふり",r:"なりふり",ro:"na ri fu ri",zh:"外表姿態"},{k:"構わず",r:"かまわず",ro:"ka ma wa zu",zh:"不顧"},{k:"側に",r:"そばに",ro:"so ba ni",zh:"在身旁"},{k:"いたい",r:"いたい",ro:"i ta i",zh:"想待"}], zh:"不顧一切地想待在你身旁" },
+  { words: [{k:"不器用な",r:"ぶきような",ro:"bu ki yō na",zh:"笨拙的"},{k:"君にも",r:"きみにも",ro:"ki mi ni mo",zh:"對你也"},{k:"期待しちゃうよ",r:"きたいしちゃうよ",ro:"ki tai shi chau yo",zh:"不禁期待"}], zh:"對笨拙的你也不禁有所期待" },
+  { words: [{k:"しがみつけば",r:"しがみつけば",ro:"shi ga mi tsu ke ba",zh:"若緊抓著"},{k:"消えそうな",r:"きえそうな",ro:"ki e sō na",zh:"快消失的"},{k:"火に",r:"ひに",ro:"hi ni",zh:"火焰"}], zh:"對那仿佛一抓就會消失的火焰" },
+  { words: [{k:"恋の",r:"こいの",ro:"ko i no",zh:"愛的"},{k:"爪立てて",r:"つめたてて",ro:"tsu me ta te te",zh:"用利爪"},{k:"近づいても",r:"ちかづいても",ro:"chi ka zu i te mo",zh:"靠近也"},{k:"いい？",r:"いい？",ro:"ii?",zh:"可以嗎？"}], zh:"我可以帶著愛的利爪靠近嗎？" },
+  {d:1},
+  { words: [{k:"怖くたって",r:"こわくたって",ro:"ko wa ku ta tte",zh:"就算害怕"},{k:"唸るぜ",r:"なるぜ",ro:"na ru ze",zh:"要咆哮"}], zh:"就算害怕也要咆哮" },
+  { words: [{k:"革命",r:"かくめい",ro:"ka ku mei",zh:"革命"},{k:"道中",r:"どうちゅう",ro:"dō chū",zh:"途中"},{k:"だって",r:"だって",ro:"datte",zh:"就算"},{k:"君に",r:"きみに",ro:"ki mi ni",zh:"為你"},{k:"夢中",r:"むちゅう",ro:"mu chū",zh:"著迷"}], zh:"就算在革命途中，也為你著迷" },
+  { words: [{k:"センチメンタルな",r:"センチメンタルな",ro:"Sen chi men ta ru na",zh:"多愁善感的"},{k:"恋",r:"こい",ro:"koi",zh:"愛情"}], zh:"多愁善感的愛情" },
+];
+
+buildHomeGrids();
+updateDiffBadge();
+</script>
+</body>
+</html>
