@@ -621,13 +621,15 @@ async function setCachedAudio(key, blob) {
 
 async function fetchELAudio(text) {
   const elSpeed = 0.6;
-  const cacheKey = `${EL_VOICE_ID}:v2:${text}`;
+  // 讀點後插入 200ms 停頓，用 SSML break（v3 cache key 避免撈到舊版沒停頓的）
+  const ssmlText = '<speak>' + text.replace(/、/g, '、<break time="200ms"/>') + '</speak>';
+  const cacheKey = `${EL_VOICE_ID}:v3:${text}`;
   const cached = await getCachedAudio(cacheKey);
   if (cached) return cached;
   const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${EL_VOICE_ID}`, {
     method: 'POST',
     headers: { 'xi-api-key': getELKey(), 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text, model_id: 'eleven_multilingual_v2', language_code: 'ja', speed: elSpeed, voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
+    body: JSON.stringify({ text: ssmlText, model_id: 'eleven_multilingual_v2', language_code: 'ja', speed: elSpeed, voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
   });
   if (!res.ok) return null;
   const blob = await res.blob();
