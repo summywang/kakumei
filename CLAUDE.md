@@ -2,13 +2,19 @@
 
 這是日文學習工具「kakumei」的開發資料夾。
 
-## Session 開始時必做
+## Session 開始時必做（照順序）
 
-1. 執行以下指令讀取最新 PROJECT.md：
+1. **請使用者先執行：**
+   ```bash
+   cd ~/Dev/nihongo && git pull
+   ```
+   確保本機是最新版本。
+
+2. **Claude 自己執行，讀取最新 PROJECT.md：**
    ```bash
    cd ~/Dev/nihongo && git fetch origin && git show origin/main:PROJECT.md
    ```
-2. 確認 Cowork 選取的資料夾是 `~/Dev/nihongo/`
-3. 詢問使用者想做什麼
+
+3. 詢問使用者今天想做什麼。
 
 詳細說明、功能清單、技術架構請見 PROJECT.md。
